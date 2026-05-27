@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>武汉→贵州14天自驾环线 - 互动地图</title>
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #1a1a2e; color: #eee; overflow: hidden; }
+
+/* ========== Layout ========== */
+#app { display: flex; height: 100vh; flex-direction: column; }
+
+/* Header */
+#header {
+  background: linear-gradient(135deg, #16213e 0%, #0f3460 50%, #533483 100%);
+  padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 10; flex-shrink: 0;
+}
+#header h1 { font-size: 18px; font-weight: 600; letter-spacing: 1px; }
+#header h1 span { color: #e94560; }
+#header .meta { font-size: 13px; color: #8899aa; }
+
+/* Main content */
+#main { display: flex; flex: 1; overflow: hidden; }
+
+/* ========== Sidebar ========== */
+#sidebar {
+  width: 380px; min-width: 380px; background: #16213e;
+  display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden; transition: width 0.3s;
+}
+#sidebar-header {
+  padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+#sidebar-header h2 { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+#sidebar-header p { font-size: 12px; color: #8899aa; }
+
+/* Day nav */
+#day-nav { display: flex; gap: 8px; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
+#day-nav button {
+  flex: 1; padding: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05);
+  color: #ccc; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;
+}
+#day-nav button:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); }
+#day-nav button.active { background: #e94560; border-color: #e94560; color: #fff; font-weight: 600; }
+#day-select { display: none; width: 100%; padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; }
+
+/* Day list */
+#day-list { flex: 1; overflow-y: auto; padding: 8px 12px; }
+#day-list::-webkit-scrollbar { width: 5px; }
+#day-list::-webkit-scrollbar-track { background: transparent; }
+#day-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+.day-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 8px;
+  cursor: pointer; transition: all 0.25s; position: relative;
+}
+.day-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+.day-card.active { background: rgba(233,69,96,0.12); border-color: #e94560; }
+.day-card .day-num {
+  display: inline-block; background: #0f3460; color: #fff; font-size: 11px;
+  font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-right: 8px;
+}
+.day-card.active .day-num { background: #e94560; }
+.day-card .day-date { font-size: 11px; color: #667788; margin-left: auto; }
+.day-card .day-title { font-size: 14px; font-weight: 600; margin: 6px 0 4px; }
+.day-card .day-route { font-size: 12px; color: #8899aa; }
+.day-card .day-meta { display: flex; gap: 16px; margin-top: 6px; font-size: 11px; color: #667788; }
+.day-card .day-meta i { margin-right: 2px; }
+
+.day-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; line-height: 1.8; }
+.day-card.active .day-detail { display: block; }
+.detail-label { display: inline-block; background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 4px; font-size: 11px; color: #aaa; margin-right: 4px; }
+.detail-section { margin-bottom: 6px; }
+.detail-section strong { color: #e94560; }
+
+/* ========== Map Area ========== */
+#map-container { flex: 1; position: relative; }
+#map { width: 100%; height: 100%; }
+
+/* Map overlay controls */
+.map-ctrl {
+  position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 10;
+}
+.map-ctrl button {
+  width: 40px; height: 40px; border-radius: 8px; border: none; background: rgba(22,33,62,0.9);
+  color: #fff; font-size: 18px; cursor: pointer; transition: all 0.2s;
+  backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.map-ctrl button:hover { background: #e94560; }
+
+/* Legend */
+#legend {
+  position: absolute; bottom: 32px; left: 16px; background: rgba(22,33,62,0.92);
+  border-radius: 10px; padding: 12px 16px; font-size: 12px;
+  backdrop-filter: blur(10px); box-shadow: 0 2px 12px rgba(0,0,0,0.3); z-index: 10;
+}
+#legend .legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* Day navigation arrows */
+#day-arrows {
+  position: absolute; bottom: 32px; right: 16px; display: flex; gap: 8px; z-index: 10;
+}
+#day-arrows button {
+  padding: 8px 16px; border-radius: 8px; border: none; background: rgba(22,33,62,0.9);
+  color: #fff; font-size: 13px; cursor: pointer; transition: all 0.2s;
+  backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+#day-arrows button:hover { background: #e94560; }
+
+/* Custom Marker Styles */
+.custom-marker {
+  background: #0f3460; color: #fff; border: 2px solid #fff; border-radius: 50%;
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  cursor: pointer;
+}
+.custom-marker.start { background: #27ae60; }
+.custom-marker.end { background: #e94560; }
+.custom-marker.highlight { background: #f39c12; border-color: #f39c12; transform: scale(1.2); }
+
+/* Info Window */
+.amap-info-content { padding: 4px; }
+.amap-info-content h4 { font-size: 13px; margin-bottom: 4px; color: #333; }
+.amap-info-content p { font-size: 11px; color: #666; line-height: 1.5; }
+
+/* ========== Mobile ========== */
+@media (max-width: 768px) {
+  #main { flex-direction: column; }
+  #sidebar { width: 100%; min-width: 100%; max-height: 45%; }
+  #map-container { height: 55%; }
+  #header h1 { font-size: 15px; }
+  #header .meta { display: none; }
+  #day-nav { flex-wrap: wrap; }
+  #day-nav button { font-size: 11px; padding: 6px; }
+  #day-select { display: block; }
+  #legend { bottom: 80px; font-size: 10px; padding: 8px 12px; }
+  #day-arrows { bottom: 80px; }
+  .day-card { padding: 10px 12px; }
+  .day-card .day-title { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Header -->
+  <div id="header">
+    <h1>🚗 武汉 → 贵州 <span>14天自驾环线</span></h1>
+    <div class="meta">5月30日 — 6月12日 · 全程约3100km · 5人同行</div>
+  </div>
+
+  <!-- Main -->
+  <div id="main">
+    <!-- Sidebar -->
+    <div id="sidebar">
+      <div id="sidebar-header">
+        <h2>📋 行程总览</h2>
+        <p>去程：湘西方向（含凤凰古城）｜ 回程：恩施方向</p>
+      </div>
+      <div id="day-nav">
+        <button onclick="scrollToDay(-1)" title="上一天">◀ 上一天</button>
+        <button onclick="scrollToDay(1)" title="下一天">下一天 ▶</button>
+        <button onclick="focusOverview()" style="flex:0.6">🗺 全景</button>
+      </div>
+      <div id="day-list"></div>
+    </div>
+
+    <!-- Map -->
+    <div id="map-container">
+      <div id="map"></div>
+      <div class="map-ctrl">
+        <button onclick="zoomIn()" title="放大">+</button>
+        <button onclick="zoomOut()" title="缩小">−</button>
+        <button onclick="focusOverview()" title="查看全景" style="font-size:14px">🏠</button>
+      </div>
+      <div id="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#27ae60"></span> 起点 · 武汉</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#2980b9"></span> 每日目的地</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#e94560"></span> 终点 · 武汉</div>
+        <div class="legend-item"><span style="border-bottom:2px solid #f39c12">&nbsp;&nbsp;&nbsp;</span>&nbsp; 当前选中段</div>
+      </div>
+      <div id="day-arrows">
+        <button onclick="prevDay()">◀ 上一天</button>
+        <span style="color:#fff;font-size:13px;line-height:36px;padding:0 4px;" id="current-day-label">Day 1</span>
+        <button onclick="nextDay()">下一天 ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== AMAP KEY CONFIG ====================
+// 请在下方替换为你自己的高德地图 JS API Key
+// 申请地址：https://console.amap.com/dev/key/app
+const AMAP_KEY = 'YOUR_AMAP_KEY_HERE';
+
+// ==================== DATA: All Unique Stops ====================
+const STOPS = [
+  { id: 0,  name: '武汉',     lat: 30.5928, lng: 114.3055, type: 'start' },
+  { id: 1,  name: '荆州',     lat: 30.3352, lng: 112.2410, type: 'stop' },
+  { id: 2,  name: '常德',     lat: 29.0316, lng: 111.6985, type: 'stop' },
+  { id: 3,  name: '凤凰古城', lat: 27.9483, lng: 109.5989, type: 'highlight' },
+  { id: 4,  name: '梵净山(江口)', lat: 27.7400, lng: 108.8100, type: 'highlight' },
+  { id: 5,  name: '西江千户苗寨', lat: 26.4939, lng: 108.1740, type: 'highlight' },
+  { id: 6,  name: '贵阳',     lat: 26.6468, lng: 106.6292, type: 'stop' },
+  { id: 7,  name: '黄果树瀑布', lat: 25.9922, lng: 105.6667, type: 'highlight' },
+  { id: 8,  name: '龙宫',     lat: 26.1300, lng: 105.8900, type: 'stop' },
+  { id: 9,  name: '云峰屯堡', lat: 26.2100, lng: 106.0500, type: 'stop' },
+  { id: 10, name: '织金洞',   lat: 26.7400, lng: 105.8700, type: 'stop' },
+  { id: 11, name: '遵义',     lat: 27.7212, lng: 106.9273, type: 'stop' },
+  { id: 12, name: '茅台镇',   lat: 27.8530, lng: 106.3700, type: 'stop' },
+  { id: 13, name: '赤水',     lat: 28.5800, lng: 105.7000, type: 'highlight' },
+  { id: 14, name: '恩施',     lat: 30.2836, lng: 109.4867, type: 'stop' },
+];
+
+// ==================== DATA: Route Segments (consecutive stop pairs) ====================
+const SEGMENTS = [
+  { from: 0, to: 1 },   // 武汉→荆州
+  { from: 1, to: 2 },   // 荆州→常德
+  { from: 2, to: 3 },   // 常德→凤凰
+  { from: 3, to: 4 },   // 凤凰→梵净山
+  { from: 4, to: 5 },   // 梵净山→西江苗寨
+  { from: 5, to: 6 },   // 西江→贵阳
+  { from: 6, to: 7 },   // 贵阳→黄果树
+  { from: 7, to: 8 },   // 黄果树→龙宫
+  { from: 8, to: 9 },   // 龙宫→云峰屯堡
+  { from: 9, to: 7 },   // 云峰屯堡→黄果树(安顺)
+  { from: 7, to: 10 },  // 安顺→织金洞
+  { from: 10, to: 11 }, // 织金洞→遵义
+  { from: 11, to: 12 }, // 遵义→茅台
+  { from: 12, to: 13 }, // 茅台→赤水
+  { from: 13, to: 14 }, // 赤水→恩施
+  { from: 14, to: 0 },  // 恩施→武汉
+];
+
+// ==================== DATA: Day-by-Day Itinerary ====================
+const ITINERARY = [
+  {
+    day: 1, date: '5月30日 周五', title: '武汉 → 荆州',
+    route: 'G318国道 · 220km · 4-5小时',
+    sights: ['荆州古城墙（东门段免费）', '荆州博物馆'],
+    food: ['荆州鱼糕', '早堂面', '公安牛肉火锅', '荆州锅盔'],
+    hotel: '古城附近客栈 / 城市便捷 · ¥150-180/间',
+    stopFrom: 0, stopTo: 1, segIndex: 0,
+    note: '上午9点出发，下午2点到达，半天逛古城。'
+  },
+  {
+    day: 2, date: '5月31日 周六', title: '荆州 → 常德',
+    route: 'G207→G319 · 210km · 4-5小时',
+    sights: ['柳叶湖', '常德诗墙（沅江边，吉尼斯纪录）'],
+    food: ['常德牛肉粉（杨永胜）', '酱板鸭', '擂茶'],
+    hotel: '柳叶湖附近 / 武陵区 · ¥150-170/间',
+    stopFrom: 1, stopTo: 2, segIndex: 1,
+    note: '上午出发，中午到达后环柳叶湖拍照。'
+  },
+  {
+    day: 3, date: '6月1日 周日', title: '常德 → 凤凰古城',
+    route: 'G319→吉首→G209 · 280km · 5-6小时',
+    sights: ['武陵山区沿途风光', '沱江黄昏+夜景'],
+    food: ['血粑鸭', '酸汤鱼', '米豆腐', '蕨粑炒腊肉'],
+    hotel: '🏡 沱江边吊脚楼民宿 · ¥180-200/间',
+    stopFrom: 2, stopTo: 3, segIndex: 2,
+    note: '下午3-4点到凤凰，赶上黄昏黄金拍摄时段。'
+  },
+  {
+    day: 4, date: '6月2日 周一', title: '凤凰古城 → 梵净山(江口)',
+    route: 'S308→江口县 · 150km · 3小时',
+    sights: ['沱江晨雾+吊脚楼（6:00-7:30）', '虹桥', '跳岩', '沈从文故居'],
+    food: ['铜仁米豆腐', '江口豆腐干'],
+    hotel: '🏡 寨沙侗寨山居民宿 · ¥170-200/间',
+    stopFrom: 3, stopTo: 4, segIndex: 3,
+    note: '⚠️ 早起拍晨雾！上午逛古城，中午出发。'
+  },
+  {
+    day: 5, date: '6月3日 周二', title: '梵净山全天',
+    route: '索道上山 · 全天游览',
+    sights: ['红云金顶', '蘑菇石', '承恩寺'],
+    food: ['铜仁锅巴粉', '社饭（土家族传统饭食）'],
+    hotel: '🏡 寨沙侗寨山居民宿 · ¥170-200/间',
+    stopFrom: 4, stopTo: 4, segIndex: -1,
+    note: '⚠️ 提前查天气！大雾/大雨金顶可能关闭。门票需公众号预约。'
+  },
+  {
+    day: 6, date: '6月4日 周三', title: '梵净山 → 西江千户苗寨',
+    route: 'G56高速 · 270km · 4-4.5小时',
+    sights: ['千户苗寨观景台全景日落', '风雨桥', '苗族歌舞表演'],
+    food: ['长桌宴（酸汤鱼、腊肉、米酒）'],
+    hotel: '🏡 观景台半山腰苗族民宿 · ¥180-200/间',
+    stopFrom: 4, stopTo: 5, segIndex: 4,
+    note: '傍晚观景台全景是此行村寨系列的高潮！'
+  },
+  {
+    day: 7, date: '6月5日 周四', title: '西江 → 贵阳',
+    route: 'G60高速 · 200km · 2.5小时',
+    sights: ['苗寨晨雾+炊烟（日出时分）', '贵阳甲秀楼'],
+    food: ['丝娃娃（杨姨妈）', '肠旺面（金牌罗记）', '花溪牛肉粉'],
+    hotel: '花果园/喷水池精品城市民宿 · ¥180-200/间',
+    stopFrom: 5, stopTo: 6, segIndex: 5,
+    note: '清晨再上观景台拍晨雾苗寨，10点后出发。'
+  },
+  {
+    day: 8, date: '6月6日 周五', title: '贵阳 → 黄果树瀑布 → 安顺',
+    route: 'G60高速 · 130km · 1.5小时',
+    sights: ['黄果树大瀑布+水帘洞', '陡坡塘瀑布', '天星桥'],
+    food: ['安顺裹卷', '夺夺粉火锅', '油炸粑'],
+    hotel: '🏡 黄果树附近布依族民宿 · ¥170-200/间',
+    stopFrom: 6, stopTo: 7, segIndex: 6,
+    note: '游览顺序：陡坡塘→天星桥→大瀑布（下午光线最好）。6月水量充沛！'
+  },
+  {
+    day: 9, date: '6月7日 周六', title: '龙宫 + 云峰屯堡',
+    route: '黄果树→龙宫 25km · 龙宫→屯堡 30km',
+    sights: ['龙宫水溶洞（乘船游览）', '云峰屯堡（明代军屯石板房）'],
+    food: ['屯堡鸡辣子', '腊肉血豆腐', '花江狗肉粉'],
+    hotel: '安顺市区 / 旧州古镇民宿 · ¥160-190/间',
+    stopFrom: 7, stopTo: 9, segIndex: 8,
+    note: '云峰屯堡是拍摄明代服饰老人的宝藏地。以安顺/黄果树为基地往返。'
+  },
+  {
+    day: 10, date: '6月8日 周日', title: '安顺 → 织金洞 → 遵义',
+    route: '安顺→织金 100km · 织金→遵义 200km',
+    sights: ['织金洞（"溶洞之王"）', '捞沙巷美食街'],
+    food: ['织金发粑', '荞凉粉', '遵义羊肉粉', '豆花面', '刘二妈米皮'],
+    hotel: '🏡 捞沙巷附近民国风民宿 · ¥160-190/间',
+    stopFrom: 7, stopTo: 11, segIndex: 11,
+    note: '溶洞不受天气影响，是雨天备选方案。'
+  },
+  {
+    day: 11, date: '6月9日 周一', title: '遵义 → 茅台镇 → 赤水',
+    route: 'G326→G212 · 220km · 遵义→茅台100km 2h · 茅台→赤水120km 2.5h',
+    sights: ['遵义会议会址', '茅台杨柳湾古街', '1915广场'],
+    food: ['茅台镇酱香白酒品尝', '赤水豆花', '筒筒笋炖腊猪脚', '赤水河鲜鱼'],
+    hotel: '🏡 赤水河畔民宿 · ¥160-190/间',
+    stopFrom: 11, stopTo: 13, segIndex: 13,
+    note: '茅台整座镇飘着酒香，杨柳湾古街拍酿酒作坊。'
+  },
+  {
+    day: 12, date: '6月10日 周二', title: '赤水丹霞全天',
+    route: '上午十丈洞 → 下午佛光岩',
+    sights: ['赤水大瀑布（十丈洞）', '佛光岩（弧形丹霞绝壁）'],
+    food: ['赤水烧烤', '猪儿粑', '竹荪蛋汤'],
+    hotel: '🏡 赤水河畔民宿 · ¥160-190/间',
+    stopFrom: 13, stopTo: 13, segIndex: -1,
+    note: '佛光岩下午3-4点阳光打上岩壁呈金红色——此行丹霞精华。'
+  },
+  {
+    day: 13, date: '6月11日 周三', title: '赤水 → 恩施',
+    route: 'G4215→重庆绕城→G50 · 500km · 5-6小时',
+    sights: ['恩施土司城（九进堂建筑群）'],
+    food: ['张关合渣', '土家酱香饼', '腊蹄子火锅'],
+    hotel: '🏡 土司城附近土家族民宿 · ¥170-200/间',
+    stopFrom: 13, stopTo: 14, segIndex: 14,
+    note: '纯赶路日，走高速为主。'
+  },
+  {
+    day: 14, date: '6月12日 周四', title: '恩施 → 武汉',
+    route: 'G50沪渝高速 · 530km · 6-7小时',
+    sights: ['四渡河大桥（世界第二高桥）', '宜昌凉虾'],
+    food: ['宜昌凉虾', '萝卜饺子', '清江鱼火锅'],
+    hotel: '🏠 回到温暖的家',
+    stopFrom: 14, stopTo: 0, segIndex: 15,
+    note: '最后一天高速赶路回家。傍晚抵达武汉。'
+  }
+];
+
+// ==================== GLOBAL STATE ====================
+let map, markers = [], polylines = [];
+let activeDay = 0;
+let allRoutePaths = []; // store all driving paths for re-drawing
+
+// ==================== INIT ====================
+function init() {
+  // Verify API key
+  if (AMAP_KEY === 'YOUR_AMAP_KEY_HERE') {
+    document.getElementById('map').innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#1a1a2e;color:#e94560;font-size:16px;text-align:center;padding:40px;">
+        <div>
+          <p style="font-size:48px;margin-bottom:16px;">🗺️</p>
+          <p style="margin-bottom:8px;"><strong>请配置高德地图 API Key</strong></p>
+          <p style="font-size:13px;color:#8899aa;">打开 index.html，将第 232 行的 <code>YOUR_AMAP_KEY_HERE</code><br>替换为你的高德 JS API Key</p>
+          <p style="font-size:12px;color:#667788;margin-top:8px;">申请地址：<a href="https://console.amap.com/dev/key/app" target="_blank" style="color:#2980b9;">https://console.amap.com/dev/key/app</a></p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  renderSidebar();
+  loadAmap();
+}
+
+// ==================== SIDEBAR RENDERING ====================
+function renderSidebar() {
+  const list = document.getElementById('day-list');
+  list.innerHTML = ITINERARY.map((d, i) => `
+    <div class="day-card${i === activeDay ? ' active' : ''}" id="day-card-${i}" onclick="selectDay(${i})">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span class="day-num">Day ${d.day}</span>
+        <span class="day-date">${d.date}</span>
+      </div>
+      <div class="day-title">${d.title}</div>
+      <div class="day-route">🛣 ${d.route}</div>
+      <div class="day-meta">
+        <span>🏞 ${d.sights.length}个景点</span>
+        <span>🍜 ${d.food.length}个美食</span>
+      </div>
+      <div class="day-detail">
+        <div class="detail-section"><strong>🏞 景点：</strong>${d.sights.join('、')}</div>
+        <div class="detail-section"><strong>🍜 美食：</strong>${d.food.join('、')}</div>
+        <div class="detail-section"><strong>🏨 住宿：</strong>${d.hotel}</div>
+        ${d.note ? `<div class="detail-section"><strong>💡 提示：</strong>${d.note}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ==================== AMAP LOADING ====================
+function loadAmap() {
+  const script = document.createElement('script');
+  script.src = `https://webapi.amap.com/v2/maps?v=2.0&key=${AMAP_KEY}&plugin=AMap.Driving`;
+  script.onload = initMap;
+  script.onerror = () => {
+    document.getElementById('map').innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#1a1a2e;color:#e94560;font-size:16px;text-align:center;padding:40px;">
+        <div>
+          <p style="font-size:48px;margin-bottom:16px;">⚠️</p>
+          <p>高德地图加载失败</p>
+          <p style="font-size:13px;color:#8899aa;margin-top:8px;">请检查 API Key 是否正确，以及网络连接。</p>
+        </div>
+      </div>`;
+  };
+  document.head.appendChild(script);
+}
+
+// ==================== MAP INIT ====================
+function initMap() {
+  map = new AMap.Map('map', {
+    center: [110.5, 29.5],
+    zoom: 7,
+    mapStyle: 'amap://styles/dark',
+    features: ['bg', 'road', 'building'],
+    viewMode: '3D',
+    pitch: 40,
+  });
+
+  // Add scale control
+  map.addControl(new AMap.Scale());
+
+  // Create markers
+  createMarkers();
+
+  // Draw routes
+  drawAllRoutes();
+
+  // Initial selection
+  selectDay(0);
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') prevDay();
+    if (e.key === 'ArrowRight') nextDay();
+  });
+}
+
+// ==================== MARKERS ====================
+function createMarkers() {
+  STOPS.forEach((stop, i) => {
+    const color = stop.type === 'start' ? '#27ae60' :
+                  stop.type === 'highlight' ? '#e94560' : '#2980b9';
+
+    const content = `<div class="custom-marker${stop.type === 'start' ? ' start' : ''}${stop.type === 'highlight' ? ' end' : ''}" style="background:${color}" id="marker-${i}">${i + 1}</div>`;
+
+    const marker = new AMap.Marker({
+      position: [stop.lng, stop.lat],
+      content: content,
+      anchor: 'center',
+      offset: new AMap.Pixel(0, 0),
+      zIndex: stop.type === 'start' ? 110 : stop.type === 'highlight' ? 105 : 100,
+    });
+
+    // Info window with trip details
+    const relevantDays = ITINERARY.filter(d => d.stopTo === i || (d.stopFrom === i && i > 0));
+    let infoHTML = `<div class="amap-info-content"><h4>${stop.name}</h4>`;
+    relevantDays.forEach(d => {
+      infoHTML += `<p>📅 Day ${d.day}：${d.title}<br>🏞 ${d.sights.join('、')}<br>🍜 ${d.food.slice(0,3).join('、')}</p>`;
+    });
+    infoHTML += '</div>';
+
+    const infoWindow = new AMap.InfoWindow({
+      content: infoHTML,
+      offset: new AMap.Pixel(0, -35),
+    });
+
+    marker.on('click', () => {
+      infoWindow.open(map, marker.getPosition());
+      // Also select the corresponding day
+      const firstDay = ITINERARY.findIndex(d => d.stopTo === i || d.stopFrom === i);
+      if (firstDay >= 0) selectDay(firstDay);
+    });
+
+    marker.setMap(map);
+    markers.push({ marker, infoWindow, stopIndex: i });
+  });
+}
+
+// ==================== ROUTE DRAWING ====================
+function drawAllRoutes() {
+  AMap.plugin('AMap.Driving', () => {
+    const drivingColors = [
+      '#3498db', '#2ecc71', '#1abc9c', '#9b59b6', '#e74c3c',
+      '#f39c12', '#e91e63', '#00bcd4', '#ff5722', '#8bc34a',
+      '#3f51b5', '#ff9800', '#009688', '#673ab7', '#cddc39',
+      '#795548'
+    ];
+
+    // Draw routes sequentially with delay to respect API rate limits
+    let completedCount = 0;
+
+    SEGMENTS.forEach((seg, idx) => {
+      const driving = new AMap.Driving({
+        policy: AMap.DrivingPolicy.LEAST_TIME,
+      });
+
+      const origin = STOPS[seg.from];
+      const dest = STOPS[seg.to];
+
+      setTimeout(() => {
+        driving.search(
+          new AMap.LngLat(origin.lng, origin.lat),
+          new AMap.LngLat(dest.lng, dest.lat),
+          (status, result) => {
+            if (status === 'complete' && result.routes && result.routes.length > 0) {
+              const steps = result.routes[0].steps;
+              let path = [];
+              steps.forEach(step => {
+                path = path.concat(step.path);
+              });
+
+              const polyline = new AMap.Polyline({
+                path: path,
+                strokeColor: drivingColors[idx % drivingColors.length],
+                strokeWeight: 4,
+                strokeOpacity: 0.5,
+                lineJoin: 'round',
+                zIndex: 50,
+              });
+              polyline.setMap(map);
+              polylines.push({ polyline, segIndex: idx, color: drivingColors[idx % drivingColors.length] });
+              allRoutePaths[idx] = { path, color: drivingColors[idx % drivingColors.length] };
+            } else {
+              // Fallback: draw straight line
+              const fallbackPath = [
+                [origin.lng, origin.lat],
+                [dest.lng, dest.lat]
+              ];
+              const polyline = new AMap.Polyline({
+                path: fallbackPath,
+                strokeColor: drivingColors[idx % drivingColors.length],
+                strokeWeight: 3,
+                strokeOpacity: 0.4,
+                strokeStyle: 'dashed',
+                zIndex: 50,
+              });
+              polyline.setMap(map);
+              polylines.push({ polyline, segIndex: idx, color: drivingColors[idx % drivingColors.length] });
+              allRoutePaths[idx] = { path: fallbackPath, color: drivingColors[idx % drivingColors.length] };
+            }
+
+            completedCount++;
+            if (completedCount === SEGMENTS.length) {
+              highlightDayRoute(activeDay);
+            }
+          }
+        );
+      }, idx * 200); // Stagger requests by 200ms
+    });
+  });
+}
+
+// ==================== HIGHLIGHT CURRENT DAY ====================
+function highlightDayRoute(dayIndex) {
+  const day = ITINERARY[dayIndex];
+
+  // Reset all polylines
+  polylines.forEach(p => {
+    p.polyline.setOptions({
+      strokeWeight: 4,
+      strokeOpacity: 0.5,
+      strokeColor: p.color,
+      zIndex: 50,
+    });
+  });
+
+  // Reset all markers
+  markers.forEach(m => {
+    const el = document.getElementById(`marker-${m.stopIndex}`);
+    if (el) el.classList.remove('highlight');
+  });
+
+  // Highlight current segment
+  if (day.segIndex >= 0 && polylines[day.segIndex]) {
+    polylines[day.segIndex].polyline.setOptions({
+      strokeWeight: 8,
+      strokeOpacity: 1,
+      strokeColor: '#f39c12',
+      zIndex: 90,
+    });
+  }
+
+  // Highlight current stop markers
+  const highlightStops = [day.stopFrom, day.stopTo];
+  highlightStops.forEach(si => {
+    const el = document.getElementById(`marker-${si}`);
+    if (el) el.classList.add('highlight');
+  });
+
+  // Update day label
+  document.getElementById('current-day-label').textContent = `Day ${day.day}`;
+
+  // Scroll sidebar
+  const card = document.getElementById(`day-card-${dayIndex}`);
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Update active state
+    document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  }
+}
+
+// ==================== DAY SELECTION ====================
+function selectDay(dayIndex) {
+  activeDay = dayIndex;
+  const day = ITINERARY[dayIndex];
+  const destStop = STOPS[day.stopTo];
+
+  // Fly to destination
+  map.panTo([destStop.lng, destStop.lat]);
+  map.setZoom(10);
+
+  // Highlight route and card
+  highlightDayRoute(dayIndex);
+
+  // Update sidebar
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById(`day-card-${dayIndex}`);
+  if (card) {
+    card.classList.add('active');
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function prevDay() {
+  const newDay = (activeDay - 1 + ITINERARY.length) % ITINERARY.length;
+  selectDay(newDay);
+}
+
+function nextDay() {
+  const newDay = (activeDay + 1) % ITINERARY.length;
+  selectDay(newDay);
+}
+
+function scrollToDay(direction) {
+  if (direction < 0) prevDay();
+  else nextDay();
+}
+
+// ==================== MAP CONTROLS ====================
+function zoomIn() { map.zoomIn(); }
+function zoomOut() { map.zoomOut(); }
+
+function focusOverview() {
+  map.setZoomAndCenter(7, [110.5, 29.5]);
+  // Reset all highlights
+  polylines.forEach(p => {
+    p.polyline.setOptions({
+      strokeWeight: 4,
+      strokeOpacity: 0.5,
+      strokeColor: p.color,
+      zIndex: 50,
+    });
+  });
+  markers.forEach(m => {
+    const el = document.getElementById(`marker-${m.stopIndex}`);
+    if (el) el.classList.remove('highlight');
+  });
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('current-day-label').textContent = '全景';
+}
+
+// ==================== START ====================
+window.onload = init;
+</script>
+</body>
+</html>
