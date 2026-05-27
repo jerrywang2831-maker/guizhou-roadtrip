@@ -193,6 +193,14 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
   </div>
 </div>
 
+<!-- 高德地图：安全密钥 + JS API（安全密钥必须在 API 脚本之前设置） -->
+<script>
+window._AMapSecurityConfig = {
+  securityJsCode: 'f371a7183da0e2631df56957a4f3e2cd',
+};
+</script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=d944d2a22335bd05e4beefdd00e405c5"></script>
+
 <script>
 // ==================== AMAP KEY CONFIG ====================
 // 请在下方替换为你自己的高德地图 JS API Key
@@ -685,16 +693,8 @@ function focusOverview() {
 }
 
 // ==================== START ====================
-window.onload = init;
+init();
 </script>
-
-<!-- 高德地图：安全密钥 + JS API 加载（必须在此顺序） -->
-<script>
-window._AMapSecurityConfig = {
-  securityJsCode: 'f371a7183da0e2631df56957a4f3e2cd',
-};
-</script>
-<script src="https://webapi.amap.com/maps?v=2.0&key=d944d2a22335bd05e4beefdd00e405c5"></script>
 
 </body>
 </html>
