@@ -420,6 +420,10 @@ function renderSidebar() {
 
 // ==================== AMAP LOADING ====================
 function loadAmap() {
+  // 安全密钥必须在加载 JS API 之前配置
+  window._AMapSecurityConfig = {
+    securityJsCode: 'f371a7183da0e2631df56957a4f3e2cd',
+  };
   const script = document.createElement('script');
   script.src = `https://webapi.amap.com/maps?v=2.0&key=${AMAP_KEY}`;
   script.onload = initMap;
