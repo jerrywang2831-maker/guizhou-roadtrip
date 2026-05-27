@@ -423,32 +423,40 @@ function renderSidebar() {
 
 // ==================== MAP INIT ====================
 function initMap() {
-  map = new AMap.Map('map', {
-    center: [110.5, 29.5],
-    zoom: 7,
-    mapStyle: 'amap://styles/dark',
-    features: ['bg', 'road', 'building'],
-    viewMode: '3D',
-    pitch: 40,
-  });
+  if (typeof AMap === 'undefined') {
+    document.getElementById('map').innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#e94560;font-size:16px;"><div><p>❌ AMap SDK 未加载</p><p style="font-size:13px;color:#8899aa;">请检查网络或 API Key 配置</p></div></div>';
+    return;
+  }
 
-  // Add scale control
-  map.addControl(new AMap.Scale());
+  try {
+    map = new AMap.Map('map', {
+      center: [110.5, 29.5],
+      zoom: 7,
+    });
 
-  // Create markers
-  createMarkers();
+    // Add scale control
+    map.addControl(new AMap.Scale());
 
-  // Draw routes
-  drawAllRoutes();
+    // Create markers
+    createMarkers();
 
-  // Initial selection
-  selectDay(0);
+    // Draw routes
+    drawAllRoutes();
 
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') prevDay();
-    if (e.key === 'ArrowRight') nextDay();
-  });
+    // Initial selection
+    selectDay(0);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevDay();
+      if (e.key === 'ArrowRight') nextDay();
+    });
+  } catch (e) {
+    document.getElementById('map').innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#e94560;font-size:14px;padding:20px;"><div><p>❌ 地图初始化失败</p><p style="font-size:12px;color:#8899aa;">' + e.message + '</p></div></div>';
+    console.error('Map init error:', e);
+  }
 }
 
 // ==================== MARKERS ====================
