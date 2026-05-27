@@ -421,7 +421,7 @@ function renderSidebar() {
 // ==================== AMAP LOADING ====================
 function loadAmap() {
   const script = document.createElement('script');
-  script.src = `https://webapi.amap.com/v2/maps?v=2.0&key=${AMAP_KEY}&plugin=AMap.Driving`;
+  script.src = `https://webapi.amap.com/maps?v=2.0&key=${AMAP_KEY}`;
   script.onload = initMap;
   script.onerror = () => {
     document.getElementById('map').innerHTML = `
