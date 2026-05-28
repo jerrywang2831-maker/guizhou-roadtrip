@@ -173,7 +173,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
   <!-- Header -->
   <div id="header">
     <h1>🚗 武汉 → 贵州 <span>15天深度自驾环线</span></h1>
-    <div class="meta">5月30日 — 6月13日 · 全程约3500km · 5人同行</div>
+    <div class="meta">5月30日 — 6月13日 · 全程约3300km · 5人同行</div>
   </div>
 
   <!-- Main -->
@@ -182,7 +182,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
     <div id="sidebar">
       <div id="sidebar-header">
         <h2>📋 行程总览</h2>
-        <p>湖南：常德桃花源→凤凰半日｜ 贵州段：梵净山·镇远·荔波·黄果树·赤水 ｜ 重庆住一晚→武汉</p>
+        <p>湖南：常德桃花源→凤凰半日｜ 贵州段：梵净山·镇远·荔波·黄果树·赤水 ｜ 回程：赤水直回武汉</p>
         <div class="route-mode-toggle">
           <span class="toggle-label active" id="lbl-guodao">🛣 国道优先</span>
           <label class="toggle-switch">
@@ -254,7 +254,6 @@ const STOPS = [
   { id: 12, name: '遵义',     lat: 27.7212, lng: 106.9273, type: 'stop' },
   { id: 13, name: '茅台镇',   lat: 27.8530, lng: 106.3700, type: 'stop' },
   { id: 14, name: '赤水',     lat: 28.5800, lng: 105.7000, type: 'highlight' },
-  { id: 15, name: '重庆',     lat: 29.5630, lng: 106.5516, type: 'stop' },
 ];
 
 // ==================== DATA: Route Segments (consecutive stop pairs) ====================
@@ -274,8 +273,7 @@ const SEGMENTS = [
   { from: 11, to: 12 }, // 织金洞→遵义
   { from: 12, to: 13 }, // 遵义→茅台
   { from: 13, to: 14 }, // 茅台→赤水
-  { from: 14, to: 15 }, // 赤水→重庆
-  { from: 15, to: 0 },  // 重庆→武汉
+  { from: 14, to: 0 },  // 赤水→武汉
 ];
 
 // ==================== DATA: Day-by-Day Itinerary ====================
@@ -410,25 +408,25 @@ const ITINERARY = [
     stopFrom: 12, stopTo: 14, segIndex: 14,
     note: '上午遵义会址，中午到茅台（整座镇飘着酒香！），傍晚到赤水河畔住下。'
   },
-  { // Day 14 - 赤水上午丹霞 + 下午出发重庆
-    day: 14, date: '6月12日 周四', title: '赤水丹霞 → 重庆',
-    route_g: { path: '上午赤水大瀑布→G546国道→重庆', dist: '赤水游玩+200km', time: '游玩2h+车程3h' },
-    route_s: { path: '上午赤水大瀑布→G4215→重庆', dist: '赤水游玩+200km', time: '游玩2h+车程2h' },
-    sights: ['赤水大瀑布·十丈洞（上午，比黄果树还高8m）', '重庆解放碑', '洪崖洞夜景', '长江索道'],
-    food: ['赤水豆花（早餐）', '重庆火锅（晚餐必吃！）', '重庆小面'],
-    hotel: '7天酒店(重庆解放碑店) 或 如家酒店(重庆洪崖洞店) · ¥180-200/间',
-    stopFrom: 14, stopTo: 15, segIndex: 15,
-    note: '上午看完十丈洞约10点出发，中午到重庆。下午解放碑+洪崖洞，晚上火锅！'
+  { // Day 14 - 赤水丹霞全天
+    day: 14, date: '6月12日 周四', title: '赤水丹霞全天',
+    route_g: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
+    route_s: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
+    sights: ['赤水大瀑布·十丈洞（比黄果树还高8m）', '佛光岩（弧形丹霞绝壁）'],
+    food: ['赤水烧烤', '猪儿粑', '竹荪蛋汤', '赤水豆花'],
+    hotel: '如家酒店(赤水河滨路店) 或 赤水丹霞客栈（续住）· ¥160-190/间',
+    stopFrom: 14, stopTo: 14, segIndex: -1,
+    note: '十丈洞上午、佛光岩下午阳光照红岩——此行丹霞收官之作！晚上收拾行李。'
   },
-  { // Day 15 - 重庆直接回武汉
-    day: 15, date: '6月13日 周五', title: '重庆 → 武汉',
-    route_g: { path: 'G318国道(重庆→恩施峡谷段)→G50沪渝(宜昌→武汉)', dist: '850km', time: '9-10h' },
-    route_s: { path: 'G50沪渝高速全程', dist: '850km', time: '8-9h' },
-    sights: ['恩施四渡河大桥（途经）', '宜昌滨江公园（午餐休息）'],
-    food: ['重庆小面（早餐）', '宜昌凉虾', '清江鱼火锅（宜昌午餐）'],
+  { // Day 15 - 赤水直回武汉
+    day: 15, date: '6月13日 周五', title: '赤水 → 武汉',
+    route_g: { path: 'G546→G318国道(恩施峡谷段)→G50高速(宜昌→武汉)', dist: '1050km', time: '11-12h' },
+    route_s: { path: 'G4215蓉遵→重庆绕城→G50沪渝全程高速', dist: '1000km', time: '10-11h' },
+    sights: ['四渡河大桥（途经）', '宜昌滨江公园（午餐休息）'],
+    food: ['赤水豆花（早餐）', '宜昌凉虾', '萝卜饺子', '清江鱼火锅（宜昌午餐）'],
     hotel: '🏠 回到温暖的家',
-    stopFrom: 15, stopTo: 0, segIndex: 16,
-    note: '最后一天全程高速回家。早8点出发，经恩施、宜昌，傍晚到武汉。'
+    stopFrom: 14, stopTo: 0, segIndex: 15,
+    note: '最后一天纯赶路。早7点出发，宜昌午餐休整，傍晚到武汉。建议走高速。'
   }
 ];
 
