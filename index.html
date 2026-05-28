@@ -7,76 +7,76 @@
 <style>
 /* ========== Reset & Base ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #1a1a2e; color: #eee; overflow: hidden; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #0f1923; color: #e0e0e0; overflow: hidden; }
 
 /* ========== Layout ========== */
 #app { display: flex; height: 100vh; flex-direction: column; }
 
 /* Header */
 #header {
-  background: linear-gradient(135deg, #16213e 0%, #0f3460 50%, #533483 100%);
-  padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 10; flex-shrink: 0;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #1a1a3e 100%);
+  padding: 0 24px; height: 58px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 10; flex-shrink: 0;
 }
-#header h1 { font-size: 18px; font-weight: 600; letter-spacing: 1px; }
-#header h1 span { color: #e94560; }
-#header .meta { font-size: 13px; color: #8899aa; }
+#header h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+#header h1 span { color: #ff6b6b; }
+#header .meta { font-size: 12px; color: #7a8a99; }
 
 /* Main content */
 #main { display: flex; flex: 1; overflow: hidden; }
 
 /* ========== Sidebar ========== */
 #sidebar {
-  width: 380px; min-width: 380px; background: #16213e;
-  display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.08);
+  width: 390px; min-width: 390px; background: #111d2b;
+  display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.06);
   overflow: hidden; transition: width 0.3s;
 }
 #sidebar-header {
-  padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 18px 20px 14px; border-bottom: 1px solid rgba(255,255,255,0.06);
   flex-shrink: 0;
 }
-#sidebar-header h2 { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
-#sidebar-header p { font-size: 12px; color: #8899aa; }
+#sidebar-header h2 { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: #fff; }
+#sidebar-header p { font-size: 11px; color: #7a8a99; line-height: 1.5; }
 
 /* Day nav */
-#day-nav { display: flex; gap: 8px; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
+#day-nav { display: flex; gap: 8px; padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; }
 #day-nav button {
-  flex: 1; padding: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05);
-  color: #ccc; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;
+  flex: 1; padding: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+  color: #bbb; border-radius: 8px; cursor: pointer; font-size: 12px; transition: all 0.2s;
 }
-#day-nav button:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); }
-#day-nav button.active { background: #e94560; border-color: #e94560; color: #fff; font-weight: 600; }
-#day-select { display: none; width: 100%; padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; }
+#day-nav button:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+#day-nav button.active { background: #ff6b6b; border-color: #ff6b6b; color: #fff; font-weight: 600; }
 
 /* Day list */
 #day-list { flex: 1; overflow-y: auto; padding: 8px 12px; }
-#day-list::-webkit-scrollbar { width: 5px; }
+#day-list::-webkit-scrollbar { width: 4px; }
 #day-list::-webkit-scrollbar-track { background: transparent; }
-#day-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+#day-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
 
 .day-card {
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 10px; padding: 14px 16px; margin-bottom: 8px;
-  cursor: pointer; transition: all 0.25s; position: relative;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+  border-left: 3px solid transparent; border-radius: 10px; padding: 14px 16px; margin-bottom: 6px;
+  cursor: pointer; transition: all 0.2s ease; position: relative;
 }
-.day-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
-.day-card.active { background: rgba(233,69,96,0.12); border-color: #e94560; }
+.day-card:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); }
+.day-card.active { background: rgba(255,107,107,0.08); border-color: rgba(255,107,107,0.3); border-left-color: #ff6b6b; }
 .day-card .day-num {
-  display: inline-block; background: #0f3460; color: #fff; font-size: 11px;
-  font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-right: 8px;
+  display: inline-block; background: #1e3a5f; color: #fff; font-size: 11px;
+  font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-right: 8px;
+  letter-spacing: 0.5px;
 }
-.day-card.active .day-num { background: #e94560; }
-.day-card .day-date { font-size: 11px; color: #667788; margin-left: auto; }
-.day-card .day-title { font-size: 14px; font-weight: 600; margin: 6px 0 4px; }
-.day-card .day-route { font-size: 12px; color: #8899aa; }
-.day-card .day-meta { display: flex; gap: 16px; margin-top: 6px; font-size: 11px; color: #667788; }
-.day-card .day-meta i { margin-right: 2px; }
+.day-card.active .day-num { background: #ff6b6b; }
+.day-card .day-date { font-size: 10px; color: #5a7a8a; }
+.day-card .day-title { font-size: 14px; font-weight: 600; margin: 8px 0 4px; color: #e8e8e8; }
+.day-card .day-route { font-size: 12px; color: #7a8a99; line-height: 1.4; }
+.day-card .day-meta { display: flex; gap: 14px; margin-top: 6px; font-size: 11px; color: #5a7a8a; }
 
-.day-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; line-height: 1.8; }
-.day-card.active .day-detail { display: block; }
-.detail-label { display: inline-block; background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 4px; font-size: 11px; color: #aaa; margin-right: 4px; }
-.detail-section { margin-bottom: 6px; }
-.detail-section strong { color: #e94560; }
+.day-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; line-height: 1.9; }
+.day-card.active .day-detail { display: block; animation: fadeIn 0.3s ease; }
+.detail-section { margin-bottom: 5px; }
+.detail-section strong { color: #ff6b6b; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ========== Map Area ========== */
 #map-container { flex: 1; position: relative; }
@@ -182,7 +182,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
     <div id="sidebar">
       <div id="sidebar-header">
         <h2>📋 行程总览</h2>
-        <p>去程：湘西穿越→凤凰｜ 贵州段：镇远·荔波·黄果树·赤水 ｜ 回程：重庆→武汉</p>
+        <p>湖南：常德桃花源→凤凰半日｜ 贵州段：梵净山·镇远·荔波·黄果树·赤水 ｜ 回程：重庆→武汉</p>
         <div class="route-mode-toggle">
           <span class="toggle-label active" id="lbl-guodao">🛣 国道优先</span>
           <label class="toggle-switch">
@@ -280,38 +280,28 @@ const SEGMENTS = [
 
 // ==================== DATA: Day-by-Day Itinerary ====================
 const ITINERARY = [
-  { // Day 1 - 湖南一天穿越
-    day: 1, date: '5月30日 周五', title: '武汉 → 凤凰古城',
-    route_g: { path: 'G318→G319→G209(经荆州/常德)', dist: '700km', time: '12-14h' },
-    route_s: { path: 'G50沪渝→G56杭瑞(经荆州/常德)', dist: '650km', time: '7-8h' },
-    sights: ['武陵山区沿途风光', '沱江黄昏+吊脚楼夜景'],
-    food: ['血粑鸭', '酸汤鱼', '米豆腐', '蕨粑炒腊肉'],
-    hotel: '凤凰等你来·江景客栈 或 7天酒店(凤凰古城店) · ¥180-200/间',
-    stopFrom: 0, stopTo: 2, segIndex: 1,
-    note: '一天穿越湖北湖南直达凤凰。国道太长建议选高速，傍晚到拍夜景。'
+  { // Day 1 - 武汉→常德 (湖南景点：常德桃花源+柳叶湖)
+    day: 1, date: '5月30日 周五', title: '武汉 → 常德',
+    route_g: { path: 'G318→G207经荆州→G319', dist: '430km', time: '8-9h' },
+    route_s: { path: 'G50沪渝→G55二广', dist: '400km', time: '4.5h' },
+    sights: ['常德桃花源（陶渊明笔下世外桃源）', '柳叶湖', '常德诗墙（沅江边吉尼斯纪录）'],
+    food: ['常德牛肉粉（杨永胜）', '酱板鸭', '擂茶'],
+    hotel: '城市便捷酒店(常德柳叶湖店) · ¥150-170/间',
+    stopFrom: 0, stopTo: 1, segIndex: 0,
+    note: '湖南第一站！桃花源在常德西南30km，时间紧可只逛柳叶湖+诗墙。'
   },
-  { // Day 2 - 凤凰全天
-    day: 2, date: '5月31日 周六', title: '凤凰古城全天',
-    route_g: { path: '古城漫步 · 全天拍照', dist: '—', time: '—' },
-    route_s: { path: '古城漫步 · 全天拍照', dist: '—', time: '—' },
-    sights: ['沱江晨雾（6:00-7:30）', '虹桥', '跳岩', '沈从文故居', '沱江泛舟', '南华山'],
-    food: ['血粑鸭', '酸汤鱼', '米豆腐', '姜糖', '猕猴桃汁'],
-    hotel: '凤凰等你来·江景客栈 或 7天酒店(凤凰古城店) 续住 · ¥180-200/间',
-    stopFrom: 2, stopTo: 2, segIndex: -1,
-    note: '全天在古城从容拍照。清晨沱江晨雾+吊脚楼是此行最佳拍摄时机。'
+  { // Day 2 - 常德→凤凰(半日)→梵净山
+    day: 2, date: '5月31日 周六', title: '常德 → 凤凰 → 梵净山',
+    route_g: { path: 'G319→吉首→G209→凤凰→G354→江口', dist: '430km', time: '9-10h' },
+    route_s: { path: 'G56杭瑞→凤凰→G56→S30→江口', dist: '400km', time: '5.5h' },
+    sights: ['凤凰古城（半日：沱江+虹桥+吊脚楼）', '沱江黄昏'],
+    food: ['血粑鸭', '酸汤鱼', '米豆腐', '姜糖'],
+    hotel: '梵净山梵行客栈 或 寨沙侗寨·梵静山舍 · ¥170-200/间',
+    stopFrom: 1, stopTo: 3, segIndex: 2,
+    note: '早6点出发，中午到凤凰逛3-4小时足矣。下午3-4点出发，傍晚到梵净山脚下。'
   },
   { // Day 3
-    day: 3, date: '6月1日 周日', title: '凤凰 → 梵净山(江口)',
-    route_g: { path: 'G354国道→江口县', dist: '150km', time: '3h' },
-    route_s: { path: 'G56杭瑞→S30江黔', dist: '130km', time: '2h' },
-    sights: ['沱江晨雾（最后机会）', '凤凰古城小巷'],
-    food: ['铜仁米豆腐', '江口豆腐干'],
-    hotel: '梵净山梵行客栈 或 寨沙侗寨·梵静山舍 · ¥170-200/间',
-    stopFrom: 2, stopTo: 3, segIndex: 2,
-    note: '早起再拍一次晨雾。上午买姜糖伴手礼，中午出发。'
-  },
-  { // Day 4
-    day: 4, date: '6月2日 周一', title: '梵净山全天',
+    day: 3, date: '6月1日 周日', title: '梵净山全天',
     route_g: { path: '索道上山 · 全天游览', dist: '—', time: '—' },
     route_s: { path: '索道上山 · 全天游览', dist: '—', time: '—' },
     sights: ['红云金顶', '蘑菇石', '承恩寺', '万米睡佛'],
@@ -320,8 +310,8 @@ const ITINERARY = [
     stopFrom: 3, stopTo: 3, segIndex: -1,
     note: '提前查天气！大雾/大雨金顶可能关闭。门票需公众号预约。'
   },
-  { // Day 5 - NEW: 梵净山→镇远
-    day: 5, date: '6月3日 周二', title: '梵净山 → 镇远古镇',
+  { // Day 4 - 梵净山→镇远
+    day: 4, date: '6月2日 周一', title: '梵净山 → 镇远古镇',
     route_g: { path: 'G354→S306省道', dist: '150km', time: '2.5-3h' },
     route_s: { path: 'G56杭瑞→S25沿榕', dist: '130km', time: '2h' },
     sights: ['镇远古镇', '舞阳河S弯全景（石屏山顶）', '祝圣桥', '青龙洞', '古巷道'],
@@ -330,18 +320,18 @@ const ITINERARY = [
     stopFrom: 3, stopTo: 4, segIndex: 3,
     note: '舞阳河S形穿城而过——石屏山顶俯拍是经典机位。黄昏+夜景都美！'
   },
-  { // Day 6
-    day: 6, date: '6月4日 周三', title: '镇远 → 西江千户苗寨',
+  { // Day 5
+    day: 5, date: '6月3日 周二', title: '镇远 → 西江千户苗寨',
     route_g: { path: 'S306→G320国道→凯里→西江', dist: '120km', time: '2.5h' },
     route_s: { path: 'S25沿榕→G60沪昆', dist: '110km', time: '1.5h' },
     sights: ['镇远清晨河景', '千户苗寨观景台全景日落', '苗族歌舞表演'],
     food: ['长桌宴（酸汤鱼、腊肉、米酒）'],
     hotel: '西江千户苗寨·观景台客栈 或 西江998客栈 · ¥180-200/间',
     stopFrom: 4, stopTo: 5, segIndex: 4,
-    note: '上午在镇远悠闲逛完，中午出发。傍晚观景台看苗寨全景华灯初上！'
+    note: '上午镇远悠闲逛完，中午出发。傍晚观景台看苗寨全景华灯初上！'
   },
-  { // Day 7 - NEW: 西江→荔波
-    day: 7, date: '6月5日 周四', title: '西江 → 荔波小七孔',
+  { // Day 6
+    day: 6, date: '6月4日 周三', title: '西江 → 荔波小七孔',
     route_g: { path: 'G320→G321→G243国道', dist: '300km', time: '5.5-6.5h' },
     route_s: { path: 'G60沪昆→G75兰海→S88麻驾', dist: '280km', time: '3.5h' },
     sights: ['黔东南苗岭风光（沿途）', '荔波县城漳江夜景'],
@@ -350,18 +340,18 @@ const ITINERARY = [
     stopFrom: 5, stopTo: 6, segIndex: 5,
     note: '一路向南深入贵州腹地。到荔波后休整，为明天养精蓄锐。'
   },
-  { // Day 8 - NEW: 荔波全天
-    day: 8, date: '6月6日 周五', title: '荔波小七孔全天',
+  { // Day 7
+    day: 7, date: '6月5日 周四', title: '荔波小七孔全天',
     route_g: { path: '小七孔+大七孔 · 全天游览', dist: '—', time: '—' },
     route_s: { path: '小七孔+大七孔 · 全天游览', dist: '—', time: '—' },
     sights: ['小七孔古桥', '拉雅瀑布', '水上森林', '卧龙潭', '鸳鸯湖', '大七孔天生桥'],
     food: ['樟江烤鱼', '荔波酸肉', '盐酸扣肉', '簸箕宴'],
     hotel: '荔波小七孔景区附近客栈 或 7天酒店(荔波店) 续住 · ¥170-200/间',
     stopFrom: 6, stopTo: 6, segIndex: -1,
-    note: '世界自然遗产！建议东门进→西门出。卧龙潭的蓝绿色湖水是此行水景巅峰。'
+    note: '世界自然遗产！建议东门进西门出。卧龙潭的蓝绿色湖水是此行水景巅峰。'
   },
-  { // Day 9
-    day: 9, date: '6月7日 周六', title: '荔波 → 贵阳',
+  { // Day 8
+    day: 8, date: '6月6日 周五', title: '荔波 → 贵阳',
     route_g: { path: 'G243→G210国道', dist: '250km', time: '4.5-5h' },
     route_s: { path: 'S88麻驾→G75兰海', dist: '240km', time: '3h' },
     sights: ['贵阳甲秀楼夜景', '二七路小吃街'],
@@ -370,8 +360,8 @@ const ITINERARY = [
     stopFrom: 6, stopTo: 7, segIndex: 6,
     note: '北上返回贵阳。傍晚到后逛甲秀楼+二七路小吃街。'
   },
-  { // Day 10
-    day: 10, date: '6月8日 周日', title: '贵阳全天休整',
+  { // Day 9
+    day: 9, date: '6月7日 周六', title: '贵阳全天休整',
     route_g: { path: '贵阳市内游览', dist: '—', time: '—' },
     route_s: { path: '贵阳市内游览', dist: '—', time: '—' },
     sights: ['甲秀楼', '黔灵山公园（看猕猴）', '青岩古镇', '花溪公园'],
@@ -380,8 +370,8 @@ const ITINERARY = [
     stopFrom: 7, stopTo: 7, segIndex: -1,
     note: '休整一天！逛吃贵阳，给身体和相机充电。青岩古镇距市区30分钟车程。'
   },
-  { // Day 11
-    day: 11, date: '6月9日 周一', title: '贵阳 → 黄果树 → 安顺',
+  { // Day 10
+    day: 10, date: '6月8日 周日', title: '贵阳 → 黄果树 → 安顺',
     route_g: { path: 'G320贵黄公路(国道)', dist: '140km', time: '2.5-3h' },
     route_s: { path: 'G60沪昆高速', dist: '130km', time: '1.5h' },
     sights: ['黄果树大瀑布+水帘洞', '陡坡塘瀑布', '天星桥'],
@@ -390,8 +380,8 @@ const ITINERARY = [
     stopFrom: 7, stopTo: 8, segIndex: 7,
     note: '游览：陡坡塘→天星桥→大瀑布（下午光线+水量最大）。6月水量最壮观！'
   },
-  { // Day 12
-    day: 12, date: '6月10日 周二', title: '龙宫 + 云峰屯堡',
+  { // Day 11
+    day: 11, date: '6月9日 周一', title: '龙宫 + 云峰屯堡',
     route_g: { path: 'X007县道→S209', dist: '55km', time: '1.5h' },
     route_s: { path: 'X007县道→S209', dist: '55km', time: '1.5h' },
     sights: ['龙宫水溶洞（乘船游览）', '云峰屯堡（明代军屯石板房）'],
@@ -400,18 +390,18 @@ const ITINERARY = [
     stopFrom: 8, stopTo: 10, segIndex: 9,
     note: '云峰屯堡拍明代服饰老人是宝藏题材！以安顺为基地往返。'
   },
-  { // Day 13
-    day: 13, date: '6月11日 周三', title: '安顺 → 织金洞 → 遵义',
+  { // Day 12
+    day: 12, date: '6月10日 周二', title: '安顺 → 织金洞 → 遵义',
     route_g: { path: 'S209→G321→G326国道', dist: '300km', time: '6-7h' },
     route_s: { path: 'G60沪昆→G75兰海', dist: '280km', time: '3.5h' },
     sights: ['织金洞（"溶洞之王"）', '捞沙巷美食街'],
     food: ['织金发粑', '荞凉粉', '遵义羊肉粉', '豆花面', '刘二妈米皮'],
     hotel: '7天酒店(遵义会址店) 或 遵义红城客栈 · ¥160-190/间',
     stopFrom: 8, stopTo: 12, segIndex: 12,
-    note: '织金洞"溶洞之王"，2-3小时游览。雨天最佳备选方案。傍晚到遵义逛捞沙巷。'
+    note: '织金洞"溶洞之王"，2-3小时游览。雨天最佳备选。傍晚到遵义逛捞沙巷。'
   },
-  { // Day 14
-    day: 14, date: '6月12日 周四', title: '遵义 → 茅台 → 赤水',
+  { // Day 13
+    day: 13, date: '6月11日 周三', title: '遵义 → 茅台 → 赤水',
     route_g: { path: 'G326→G212国道(赤水河谷)', dist: '220km', time: '4.5-5h' },
     route_s: { path: 'G4215蓉遵高速', dist: '200km', time: '2.5h' },
     sights: ['遵义会议会址', '茅台杨柳湾古街', '赤水河边夜景'],
@@ -420,15 +410,25 @@ const ITINERARY = [
     stopFrom: 12, stopTo: 14, segIndex: 14,
     note: '上午遵义会址，中午到茅台（整座镇飘着酒香！）。赤水河畔住下。'
   },
-  { // Day 15 - 赤水丹霞 + 返程
-    day: 15, date: '6月13日 周五', title: '赤水丹霞 → 重庆 → 武汉',
-    route_g: { path: '上午赤水大瀑布→G546→重庆→G50沪渝', dist: '赤水游玩+返程960km', time: '游玩2h+返程10h' },
-    route_s: { path: '上午赤水大瀑布→G4215→重庆→G50沪渝', dist: '赤水游玩+返程900km', time: '游玩2h+返程9h' },
-    sights: ['赤水大瀑布（十丈洞）', '佛光岩（二选一：十丈洞更顺路）', '重庆午餐火锅'],
-    food: ['赤水豆花', '重庆火锅（午餐）', '宜昌晚餐（如经停）'],
+  { // Day 14
+    day: 14, date: '6月12日 周四', title: '赤水丹霞全天',
+    route_g: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
+    route_s: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
+    sights: ['赤水大瀑布（十丈洞）', '佛光岩（弧形丹霞绝壁）'],
+    food: ['赤水烧烤', '猪儿粑', '竹荪蛋汤'],
+    hotel: '如家酒店(赤水河滨路店) 或 赤水丹霞客栈（续住）· ¥160-190/间',
+    stopFrom: 14, stopTo: 14, segIndex: -1,
+    note: '佛光岩下午阳光打上岩壁呈金红色——此行丹霞精华！'
+  },
+  { // Day 15
+    day: 15, date: '6月13日 周五', title: '赤水 → 重庆 → 武汉',
+    route_g: { path: '上午赤水大瀑布→G546→重庆→G50沪渝', dist: '游玩+返程960km', time: '游玩2h+返程10h' },
+    route_s: { path: 'G4215蓉遵→重庆绕城→G50沪渝', dist: '900km', time: '游玩2h+返程9h' },
+    sights: ['赤水大瀑布（十丈洞）', '重庆午餐火锅'],
+    food: ['赤水豆花', '重庆火锅（午餐）'],
     hotel: '🏠 回到温暖的家',
     stopFrom: 14, stopTo: 0, segIndex: 16,
-    note: '最后一天：上午看赤水大瀑布，中午到重庆吃火锅，傍晚一路高速返武汉。'
+    note: '上午看赤水大瀑布（选十丈洞最顺路），中午重庆火锅，之后一路高速返汉。'
   }
 ];
 
@@ -606,10 +606,10 @@ function drawAllRoutes() {
       const dest = new AMap.LngLat(STOPS[seg.to].lng, STOPS[seg.to].lat);
       const color = drivingColors[idx % drivingColors.length];
 
-      // === 国道路线 (avoid highways) ===
+      // === 国道路线 (LEAST_FEE = avoid toll highways) ===
       setTimeout(() => {
-        const dG = new AMap.Driving({ policy: AMap.DrivingPolicy.LEAST_TIME });
-        dG.search(origin, dest, { avoidhighway: true }, (status, result) => {
+        const dG = new AMap.Driving({ policy: AMap.DrivingPolicy.LEAST_FEE });
+        dG.search(origin, dest, (status, result) => {
           const path = extractPath(result);
           if (path) {
             const pl = createPolyline(path, color);
