@@ -129,6 +129,28 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
 .amap-info-content h4 { font-size: 13px; margin-bottom: 4px; color: #333; }
 .amap-info-content p { font-size: 11px; color: #666; line-height: 1.5; }
 
+/* Route mode toggle */
+.route-mode-toggle {
+  display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 6px 0;
+  font-size: 12px; color: #8899aa;
+}
+.route-mode-toggle .toggle-label { font-weight: 500; }
+.route-mode-toggle .toggle-label.active { color: #e94560; font-weight: 700; }
+.toggle-switch {
+  position: relative; width: 52px; height: 26px; flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0; background: #27ae60; border-radius: 26px;
+  cursor: pointer; transition: 0.3s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute; height: 20px; width: 20px;
+  left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: 0.3s;
+}
+.toggle-switch input:checked + .toggle-slider { background: #2980b9; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(26px); }
+
 /* ========== Mobile ========== */
 @media (max-width: 768px) {
   #main { flex-direction: column; }
@@ -150,8 +172,8 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
 <div id="app">
   <!-- Header -->
   <div id="header">
-    <h1>🚗 武汉 → 贵州 <span>13天国道自驾环线</span></h1>
-    <div class="meta">5月30日 — 6月11日 · 全程约2930km · 国道为主 · 5人同行</div>
+    <h1>🚗 武汉 → 贵州 <span>15天自驾环线</span></h1>
+    <div class="meta">5月30日 — 6月13日 · 全程约3100km · 5人同行</div>
   </div>
 
   <!-- Main -->
@@ -160,7 +182,15 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
     <div id="sidebar">
       <div id="sidebar-header">
         <h2>📋 行程总览</h2>
-        <p>去程：湘西方向（含凤凰古城）｜ 回程：恩施方向</p>
+        <p>去程：湘西穿越（Day1直达凤凰）｜ 回程：恩施方向</p>
+        <div class="route-mode-toggle">
+          <span class="toggle-label active" id="lbl-guodao">🛣 国道优先</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="route-mode-switch" onchange="toggleRouteMode()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label" id="lbl-gaosu">🚀 高速优先</span>
+        </div>
       </div>
       <div id="day-nav">
         <button onclick="scrollToDay(-1)" title="上一天">◀ 上一天</button>
@@ -245,129 +275,164 @@ const SEGMENTS = [
 ];
 
 // ==================== DATA: Day-by-Day Itinerary ====================
+// Each day has route_g (国道) and route_s (高速) for toggle switching
 const ITINERARY = [
-  {
-    day: 1, date: '5月30日 周五', title: '武汉 → 常德',
-    route: 'G318→G207(经荆州)→G319 · 430km · 8-9小时',
-    sights: ['柳叶湖', '常德诗墙（沅江边）'],
-    food: ['常德牛肉粉（杨永胜）', '酱板鸭', '擂茶'],
-    hotel: '城市便捷酒店(常德柳叶湖店) 或 7天酒店(常德武陵大道店) · ¥150-170/间',
-    stopFrom: 0, stopTo: 1, segIndex: 0,
-    note: '全程国道，穿江汉平原进武陵山区。早8点出发，傍晚到常德。'
-  },
-  {
-    day: 2, date: '5月31日 周六', title: '常德 → 凤凰古城',
-    route: 'G319→吉首→G209国道 · 280km · 5-6小时',
+  { // Day 1 - 湖南境内一天穿越
+    day: 1, date: '5月30日 周五', title: '武汉 → 凤凰古城',
+    route_g: { path: 'G318→G319→G209(经荆州/常德)', dist: '700km', time: '12-14h' },
+    route_s: { path: 'G50沪渝→G56杭瑞(经荆州/常德)', dist: '650km', time: '7-8h' },
     sights: ['武陵山区沿途风光', '沱江黄昏+夜景'],
     food: ['血粑鸭', '酸汤鱼', '米豆腐', '蕨粑炒腊肉'],
     hotel: '凤凰等你来·江景客栈 或 7天酒店(凤凰古城店) · ¥180-200/间',
-    stopFrom: 1, stopTo: 2, segIndex: 1,
-    note: 'G319国道穿武陵山，沿途本身就是风景。下午到凤凰，拍黄昏+夜景。'
+    stopFrom: 0, stopTo: 2, segIndex: 1,
+    note: '一天穿越湖北湖南两省，傍晚到凤凰拍夜景。国道过长建议选高速。'
   },
-  {
-    day: 3, date: '6月1日 周日', title: '凤凰古城 → 梵净山(江口)',
-    route: 'G354国道→江口县 · 150km · 3小时',
-    sights: ['沱江晨雾+吊脚楼（6:00-7:30）', '虹桥', '跳岩', '沈从文故居'],
+  { // Day 2 - 凤凰全天
+    day: 2, date: '5月31日 周六', title: '凤凰古城全天',
+    route_g: { path: '古城漫步 · 全天拍照', dist: '—', time: '—' },
+    route_s: { path: '古城漫步 · 全天拍照', dist: '—', time: '—' },
+    sights: ['沱江晨雾（6:00-7:30）', '虹桥', '跳岩', '沈从文故居', '沱江泛舟', '南华山'],
+    food: ['血粑鸭', '酸汤鱼', '米豆腐', '姜糖', '猕猴桃汁'],
+    hotel: '凤凰等你来·江景客栈 或 7天酒店(凤凰古城店) 续住 · ¥180-200/间',
+    stopFrom: 2, stopTo: 2, segIndex: -1,
+    note: '全天在古城从容拍照。清晨沱江晨雾+吊脚楼是此行最佳拍摄时机。'
+  },
+  { // Day 3
+    day: 3, date: '6月1日 周日', title: '凤凰 → 梵净山(江口)',
+    route_g: { path: 'G354国道→江口县', dist: '150km', time: '3h' },
+    route_s: { path: 'G56杭瑞→S30江黔', dist: '130km', time: '2h' },
+    sights: ['沱江晨雾（最后机会）', '凤凰古城小巷'],
     food: ['铜仁米豆腐', '江口豆腐干'],
     hotel: '梵净山梵行客栈 或 寨沙侗寨·梵静山舍 · ¥170-200/间',
     stopFrom: 2, stopTo: 3, segIndex: 2,
-    note: '早起拍晨雾！上午逛古城，中午出发，下午到江口休整。'
+    note: '早起再拍一次晨雾。上午买点姜糖伴手礼，中午出发。'
   },
-  {
+  { // Day 4
     day: 4, date: '6月2日 周一', title: '梵净山全天',
-    route: '索道上山 · 全天游览',
-    sights: ['红云金顶', '蘑菇石', '承恩寺'],
+    route_g: { path: '索道上山 · 全天游览', dist: '—', time: '—' },
+    route_s: { path: '索道上山 · 全天游览', dist: '—', time: '—' },
+    sights: ['红云金顶', '蘑菇石', '承恩寺', '万米睡佛'],
     food: ['铜仁锅巴粉', '社饭（土家族传统饭食）'],
     hotel: '梵净山梵行客栈 或 寨沙侗寨·梵静山舍（续住）· ¥170-200/间',
     stopFrom: 3, stopTo: 3, segIndex: -1,
     note: '提前查天气！大雾/大雨金顶可能关闭。门票需公众号预约。'
   },
-  {
+  { // Day 5
     day: 5, date: '6月3日 周二', title: '梵净山 → 西江千户苗寨',
-    route: 'G354→G320国道→凯里→西江 · 270km · 5.5-6.5小时',
+    route_g: { path: 'G354→G320国道→凯里→西江', dist: '270km', time: '5.5-6.5h' },
+    route_s: { path: 'G56杭瑞→S62→G60沪昆', dist: '250km', time: '3.5-4h' },
     sights: ['千户苗寨观景台全景日落', '风雨桥', '苗族歌舞表演'],
     food: ['长桌宴（酸汤鱼、腊肉、米酒）'],
     hotel: '西江千户苗寨·观景台客栈 或 西江998客栈 · ¥180-200/间',
     stopFrom: 3, stopTo: 4, segIndex: 3,
-    note: 'G320国道横穿黔东，沿途苗寨村落星罗棋布。傍晚观景台看全景华灯初上！'
+    note: '傍晚观景台看全景华灯初上——此行村寨系列的高潮时刻！'
   },
-  {
+  { // Day 6
     day: 6, date: '6月4日 周三', title: '西江 → 贵阳',
-    route: 'G320国道→沪瑞线 · 230km · 4.5-5小时',
-    sights: ['苗寨晨雾+炊烟（日出时分）', '贵阳甲秀楼夜景'],
+    route_g: { path: 'G320国道→沪瑞线', dist: '230km', time: '4.5-5h' },
+    route_s: { path: 'G60沪昆高速', dist: '200km', time: '2.5h' },
+    sights: ['苗寨晨雾+炊烟', '贵阳甲秀楼夜景', '二七路小吃街'],
     food: ['丝娃娃（杨姨妈）', '肠旺面（金牌罗记）', '花溪牛肉粉'],
-    hotel: '7天优品酒店(贵阳花果园店) 或 如家精选酒店(贵阳喷水池店) · ¥180-200/间',
+    hotel: '7天优品(贵阳花果园店) 或 如家精选(贵阳喷水池店) · ¥180-200/间',
     stopFrom: 4, stopTo: 5, segIndex: 4,
-    note: '清晨拍晨雾苗寨，10点出发。G320国道沿途黔东南田园风光。'
+    note: '清晨拍晨雾苗寨。G320国道沿途黔东南田园风光，下午到贵阳。'
   },
-  {
-    day: 7, date: '6月5日 周四', title: '贵阳 → 黄果树瀑布 → 安顺',
-    route: 'G320贵黄公路(国道) · 140km · 2.5-3小时',
+  { // Day 7 - NEW: 贵阳全天
+    day: 7, date: '6月5日 周四', title: '贵阳全天休整',
+    route_g: { path: '贵阳市内游览', dist: '—', time: '—' },
+    route_s: { path: '贵阳市内游览', dist: '—', time: '—' },
+    sights: ['甲秀楼', '黔灵山公园（看猕猴）', '青岩古镇', '花溪公园'],
+    food: ['丝娃娃', '肠旺面', '花溪牛肉粉', '雷家豆腐圆子', '青岩猪蹄'],
+    hotel: '7天优品(贵阳花果园店) 或 如家精选(贵阳喷水池店) 续住 · ¥180-200/间',
+    stopFrom: 5, stopTo: 5, segIndex: -1,
+    note: '休整一天！逛吃贵阳，给身体和相机充电。青岩古镇距市区30分钟车程。'
+  },
+  { // Day 8
+    day: 8, date: '6月6日 周五', title: '贵阳 → 黄果树 → 安顺',
+    route_g: { path: 'G320贵黄公路(国道)', dist: '140km', time: '2.5-3h' },
+    route_s: { path: 'G60沪昆高速', dist: '130km', time: '1.5h' },
     sights: ['黄果树大瀑布+水帘洞', '陡坡塘瀑布', '天星桥'],
     food: ['安顺裹卷', '夺夺粉火锅', '油炸粑'],
     hotel: '黄果树开元颐居酒店 或 如家酒店(安顺火车站店) · ¥170-200/间',
     stopFrom: 5, stopTo: 6, segIndex: 5,
-    note: '贵黄公路本身就是景观大道。游览：陡坡塘→天星桥→大瀑布。6月水量最壮观！'
+    note: '游览顺序：陡坡塘→天星桥→大瀑布（下午光线+水量最大）。6月水量最壮观！'
   },
-  {
-    day: 8, date: '6月6日 周五', title: '龙宫 + 云峰屯堡',
-    route: '黄果树→龙宫(X007县道) 25km · 龙宫→屯堡(S209) 30km',
+  { // Day 9
+    day: 9, date: '6月7日 周六', title: '龙宫 + 云峰屯堡',
+    route_g: { path: 'X007县道→S209', dist: '55km', time: '1.5h' },
+    route_s: { path: 'X007县道→S209', dist: '55km', time: '1.5h' },
     sights: ['龙宫水溶洞（乘船游览）', '云峰屯堡（明代军屯石板房）'],
     food: ['屯堡鸡辣子', '腊肉血豆腐', '花江狗肉粉'],
     hotel: '如家酒店(安顺火车站店) 或 旧州客栈 · ¥160-190/间',
     stopFrom: 6, stopTo: 8, segIndex: 7,
-    note: '云峰屯堡是拍摄明代服饰老人的宝藏地。以安顺为基地往返。'
+    note: '云峰屯堡拍明代服饰老人是宝藏题材！以安顺为基地往返。'
   },
-  {
-    day: 9, date: '6月7日 周六', title: '安顺 → 织金洞 → 遵义',
-    route: 'S209→G321→G326国道 · 300km · 6-7小时',
+  { // Day 10
+    day: 10, date: '6月8日 周日', title: '安顺 → 织金洞 → 遵义',
+    route_g: { path: 'S209→G321→G326国道', dist: '300km', time: '6-7h' },
+    route_s: { path: 'G60沪昆→G75兰海', dist: '280km', time: '3.5h' },
     sights: ['织金洞（"溶洞之王"）', '捞沙巷美食街'],
     food: ['织金发粑', '荞凉粉', '遵义羊肉粉', '豆花面', '刘二妈米皮'],
     hotel: '7天酒店(遵义会址店) 或 遵义红城客栈 · ¥160-190/间',
     stopFrom: 6, stopTo: 10, segIndex: 10,
-    note: 'S209省道穿越黔中丘陵，风景秀丽。溶洞不受天气影响。'
+    note: '织金洞溶洞之王，2-3小时游览。雨天最佳备选方案。傍晚到遵义逛捞沙巷。'
   },
-  {
-    day: 10, date: '6月8日 周日', title: '遵义 → 茅台镇 → 赤水',
-    route: 'G326→G212国道 · 220km · 4.5-5小时',
+  { // Day 11
+    day: 11, date: '6月9日 周一', title: '遵义 → 茅台 → 赤水',
+    route_g: { path: 'G326→G212国道(赤水河谷)', dist: '220km', time: '4.5-5h' },
+    route_s: { path: 'G4215蓉遵高速', dist: '200km', time: '2.5h' },
     sights: ['遵义会议会址', '茅台杨柳湾古街', '1915广场', '赤水河边夜景'],
     food: ['茅台镇酱香白酒品尝', '赤水豆花', '筒筒笋炖腊猪脚', '赤水河鲜鱼'],
     hotel: '如家酒店(赤水河滨路店) 或 赤水丹霞客栈 · ¥160-190/间',
     stopFrom: 10, stopTo: 12, segIndex: 12,
-    note: 'G326→G212全为国道，穿行赤水河谷。茅台整座镇飘着酒香！'
+    note: 'G326→G212国道穿行赤水河谷，风景极美。茅台整座镇飘着酒香！'
   },
-  {
-    day: 11, date: '6月9日 周一', title: '赤水丹霞全天',
-    route: '上午十丈洞 → 下午佛光岩',
+  { // Day 12
+    day: 12, date: '6月10日 周二', title: '赤水丹霞全天',
+    route_g: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
+    route_s: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
     sights: ['赤水大瀑布（十丈洞）', '佛光岩（弧形丹霞绝壁）'],
     food: ['赤水烧烤', '猪儿粑', '竹荪蛋汤'],
     hotel: '如家酒店(赤水河滨路店) 或 赤水丹霞客栈（续住）· ¥160-190/间',
     stopFrom: 12, stopTo: 12, segIndex: -1,
     note: '佛光岩下午阳光打上岩壁呈金红色——此行丹霞精华！'
   },
-  {
-    day: 12, date: '6月10日 周二', title: '赤水 → 恩施',
-    route: 'G546国道→重庆→G318→G209国道 · 520km · 9-10小时',
+  { // Day 13
+    day: 13, date: '6月11日 周三', title: '赤水 → 恩施',
+    route_g: { path: 'G546→G318→G209国道', dist: '520km', time: '9-10h' },
+    route_s: { path: 'G4215蓉遵→重庆绕城→G50沪渝', dist: '500km', time: '5-6h' },
     sights: ['恩施土司城（九进堂建筑群）'],
     food: ['张关合渣', '土家酱香饼', '腊蹄子火锅'],
-    hotel: '如家酒店(恩施土司城店) 或 城市便捷酒店(恩施火车站店) · ¥170-200/间',
+    hotel: '如家酒店(恩施土司城店) 或 城市便捷(恩施火车站店) · ¥170-200/间',
     stopFrom: 12, stopTo: 13, segIndex: 13,
-    note: '全程最长国道日，穿重庆南部、鄂西山区。疲劳时可走G50高速代替后半段。'
+    note: '穿重庆南部入鄂西。国道过长，推荐走高速。'
   },
-  {
-    day: 13, date: '6月11日 周三', title: '恩施 → 武汉',
-    route: 'G318国道(恩施→宜昌峡谷段)→G50高速(宜昌→武汉) · 530km · 7-8小时',
-    sights: ['四渡河大桥', '宜昌滨江公园'],
+  { // Day 14 - NEW: 恩施全天
+    day: 14, date: '6月12日 周四', title: '恩施全天',
+    route_g: { path: '恩施市内及周边游览', dist: '—', time: '—' },
+    route_s: { path: '恩施市内及周边游览', dist: '—', time: '—' },
+    sights: ['恩施土司城', '恩施女儿城', '恩施大峡谷（可选）'],
+    food: ['张关合渣', '土家酱香饼', '腊蹄子火锅', '恩施豆皮', '油香儿'],
+    hotel: '如家酒店(恩施土司城店) 或 城市便捷(恩施火车站店) 续住 · ¥170-200/间',
+    stopFrom: 13, stopTo: 13, segIndex: -1,
+    note: '休整一天。土司城+女儿城轻松逛，体力好可去大峡谷（需一整天）。'
+  },
+  { // Day 15
+    day: 15, date: '6月13日 周五', title: '恩施 → 武汉',
+    route_g: { path: 'G318国道(恩施→宜昌峡谷段)+G50高速(宜昌→武汉)', dist: '530km', time: '7-8h' },
+    route_s: { path: 'G50沪渝高速全程', dist: '530km', time: '6-7h' },
+    sights: ['四渡河大桥（世界第二高桥）', '宜昌滨江公园', '清江画廊（顺路）'],
     food: ['宜昌凉虾', '萝卜饺子', '清江鱼火锅（宜昌午餐）'],
     hotel: '🏠 回到温暖的家',
     stopFrom: 13, stopTo: 0, segIndex: 14,
-    note: '恩施→宜昌段走G318国道（鄂西峡谷风景精华），宜昌之后走G50高速回家。'
+    note: '恩施→宜昌段推荐G318国道（鄂西峡谷风景精华段），宜昌之后走高速回家。'
   }
 ];
 
 // ==================== GLOBAL STATE ====================
 let map, markers = [], polylines = [];
 let activeDay = 0;
+let routeMode = 'g'; // 'g' = 国道优先, 's' = 高速优先
 let allRoutePaths = []; // store all driving paths for re-drawing
 
 // ==================== INIT ====================
@@ -393,14 +458,18 @@ function init() {
 // ==================== SIDEBAR RENDERING ====================
 function renderSidebar() {
   const list = document.getElementById('day-list');
-  list.innerHTML = ITINERARY.map((d, i) => `
+  const icon = routeMode === 'g' ? '🛣' : '🚀';
+  list.innerHTML = ITINERARY.map((d, i) => {
+    const r = routeMode === 'g' ? d.route_g : d.route_s;
+    const routeStr = r.dist === '—' ? r.path : `${r.path} · ${r.dist} · ${r.time}`;
+    return `
     <div class="day-card${i === activeDay ? ' active' : ''}" id="day-card-${i}" onclick="selectDay(${i})">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <span class="day-num">Day ${d.day}</span>
         <span class="day-date">${d.date}</span>
       </div>
       <div class="day-title">${d.title}</div>
-      <div class="day-route">🛣 ${d.route}</div>
+      <div class="day-route">${icon} ${routeStr}</div>
       <div class="day-meta">
         <span>🏞 ${d.sights.length}个景点</span>
         <span>🍜 ${d.food.length}个美食</span>
@@ -412,7 +481,9 @@ function renderSidebar() {
         ${d.note ? `<div class="detail-section"><strong>💡 提示：</strong>${d.note}</div>` : ''}
       </div>
     </div>
-  `).join('');
+  `}).join('');
+  // Update day label
+  updateDayLabel();
 }
 
 // ==================== AMAP LOADING ====================
@@ -606,7 +677,7 @@ function highlightDayRoute(dayIndex) {
   });
 
   // Update day label
-  document.getElementById('current-day-label').textContent = `Day ${day.day}`;
+  updateDayLabel();
 
   // Scroll sidebar
   const card = document.getElementById(`day-card-${dayIndex}`);
@@ -676,6 +747,24 @@ function focusOverview() {
   });
   document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
   document.getElementById('current-day-label').textContent = '全景';
+}
+
+// ==================== ROUTE MODE TOGGLE ====================
+function toggleRouteMode() {
+  const sw = document.getElementById('route-mode-switch');
+  routeMode = sw.checked ? 's' : 'g';
+  document.getElementById('lbl-guodao').classList.toggle('active', !sw.checked);
+  document.getElementById('lbl-gaosu').classList.toggle('active', sw.checked);
+  renderSidebar();
+  updateDayLabel();
+}
+
+function updateDayLabel() {
+  if (activeDay < 0 || activeDay >= ITINERARY.length) return;
+  const d = ITINERARY[activeDay];
+  const r = routeMode === 'g' ? d.route_g : d.route_s;
+  const routeStr = r.dist === '—' ? r.path : `${r.path} · ${r.dist} · ${r.time}`;
+  document.getElementById('current-day-label').textContent = `Day ${d.day}`;
 }
 
 // ==================== START ====================
