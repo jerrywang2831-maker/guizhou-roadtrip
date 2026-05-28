@@ -172,8 +172,8 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
 <div id="app">
   <!-- Header -->
   <div id="header">
-    <h1>🚗 武汉 → 贵州 <span>15天自驾环线</span></h1>
-    <div class="meta">5月30日 — 6月13日 · 全程约3100km · 5人同行</div>
+    <h1>🚗 武汉 → 贵州 <span>15天深度自驾环线</span></h1>
+    <div class="meta">5月30日 — 6月13日 · 全程约3500km · 5人同行</div>
   </div>
 
   <!-- Main -->
@@ -182,7 +182,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
     <div id="sidebar">
       <div id="sidebar-header">
         <h2>📋 行程总览</h2>
-        <p>去程：湘西穿越（Day1直达凤凰）｜ 回程：恩施方向</p>
+        <p>去程：湘西穿越→凤凰｜ 贵州段：镇远·荔波·黄果树·赤水 ｜ 回程：重庆→武汉</p>
         <div class="route-mode-toggle">
           <span class="toggle-label active" id="lbl-guodao">🛣 国道优先</span>
           <label class="toggle-switch">
@@ -243,16 +243,18 @@ const STOPS = [
   { id: 1,  name: '常德',     lat: 29.0316, lng: 111.6985, type: 'stop' },
   { id: 2,  name: '凤凰古城', lat: 27.9483, lng: 109.5989, type: 'highlight' },
   { id: 3,  name: '梵净山(江口)', lat: 27.7400, lng: 108.8100, type: 'highlight' },
-  { id: 4,  name: '西江千户苗寨', lat: 26.4939, lng: 108.1740, type: 'highlight' },
-  { id: 5,  name: '贵阳',     lat: 26.6468, lng: 106.6292, type: 'stop' },
-  { id: 6,  name: '黄果树瀑布', lat: 25.9922, lng: 105.6667, type: 'highlight' },
-  { id: 7,  name: '龙宫',     lat: 26.1300, lng: 105.8900, type: 'stop' },
-  { id: 8,  name: '云峰屯堡', lat: 26.2100, lng: 106.0500, type: 'stop' },
-  { id: 9,  name: '织金洞',   lat: 26.7400, lng: 105.8700, type: 'stop' },
-  { id: 10, name: '遵义',     lat: 27.7212, lng: 106.9273, type: 'stop' },
-  { id: 11, name: '茅台镇',   lat: 27.8530, lng: 106.3700, type: 'stop' },
-  { id: 12, name: '赤水',     lat: 28.5800, lng: 105.7000, type: 'highlight' },
-  { id: 13, name: '恩施',     lat: 30.2836, lng: 109.4867, type: 'stop' },
+  { id: 4,  name: '镇远古镇', lat: 27.0498, lng: 108.4200, type: 'highlight' },
+  { id: 5,  name: '西江千户苗寨', lat: 26.4939, lng: 108.1740, type: 'highlight' },
+  { id: 6,  name: '荔波小七孔', lat: 25.4120, lng: 107.8860, type: 'highlight' },
+  { id: 7,  name: '贵阳',     lat: 26.6468, lng: 106.6292, type: 'stop' },
+  { id: 8,  name: '黄果树瀑布', lat: 25.9922, lng: 105.6667, type: 'highlight' },
+  { id: 9,  name: '龙宫',     lat: 26.1300, lng: 105.8900, type: 'stop' },
+  { id: 10, name: '云峰屯堡', lat: 26.2100, lng: 106.0500, type: 'stop' },
+  { id: 11, name: '织金洞',   lat: 26.7400, lng: 105.8700, type: 'stop' },
+  { id: 12, name: '遵义',     lat: 27.7212, lng: 106.9273, type: 'stop' },
+  { id: 13, name: '茅台镇',   lat: 27.8530, lng: 106.3700, type: 'stop' },
+  { id: 14, name: '赤水',     lat: 28.5800, lng: 105.7000, type: 'highlight' },
+  { id: 15, name: '重庆',     lat: 29.5630, lng: 106.5516, type: 'stop' },
 ];
 
 // ==================== DATA: Route Segments (consecutive stop pairs) ====================
@@ -260,32 +262,33 @@ const SEGMENTS = [
   { from: 0, to: 1 },   // 武汉→常德
   { from: 1, to: 2 },   // 常德→凤凰
   { from: 2, to: 3 },   // 凤凰→梵净山
-  { from: 3, to: 4 },   // 梵净山→西江苗寨
-  { from: 4, to: 5 },   // 西江→贵阳
-  { from: 5, to: 6 },   // 贵阳→黄果树
-  { from: 6, to: 7 },   // 黄果树→龙宫
-  { from: 7, to: 8 },   // 龙宫→云峰屯堡
-  { from: 8, to: 6 },   // 云峰屯堡→黄果树(安顺)
-  { from: 6, to: 9 },   // 安顺→织金洞
-  { from: 9, to: 10 },  // 织金洞→遵义
-  { from: 10, to: 11 }, // 遵义→茅台
-  { from: 11, to: 12 }, // 茅台→赤水
-  { from: 12, to: 13 }, // 赤水→恩施
-  { from: 13, to: 0 },  // 恩施→武汉
+  { from: 3, to: 4 },   // 梵净山→镇远
+  { from: 4, to: 5 },   // 镇远→西江苗寨
+  { from: 5, to: 6 },   // 西江→荔波
+  { from: 6, to: 7 },   // 荔波→贵阳
+  { from: 7, to: 8 },   // 贵阳→黄果树
+  { from: 8, to: 9 },   // 黄果树→龙宫
+  { from: 9, to: 10 },  // 龙宫→云峰屯堡
+  { from: 10, to: 8 },  // 云峰屯堡→安顺(返回)
+  { from: 8, to: 11 },  // 安顺→织金洞
+  { from: 11, to: 12 }, // 织金洞→遵义
+  { from: 12, to: 13 }, // 遵义→茅台
+  { from: 13, to: 14 }, // 茅台→赤水
+  { from: 14, to: 15 }, // 赤水→重庆
+  { from: 15, to: 0 },  // 重庆→武汉
 ];
 
 // ==================== DATA: Day-by-Day Itinerary ====================
-// Each day has route_g (国道) and route_s (高速) for toggle switching
 const ITINERARY = [
-  { // Day 1 - 湖南境内一天穿越
+  { // Day 1 - 湖南一天穿越
     day: 1, date: '5月30日 周五', title: '武汉 → 凤凰古城',
     route_g: { path: 'G318→G319→G209(经荆州/常德)', dist: '700km', time: '12-14h' },
     route_s: { path: 'G50沪渝→G56杭瑞(经荆州/常德)', dist: '650km', time: '7-8h' },
-    sights: ['武陵山区沿途风光', '沱江黄昏+夜景'],
+    sights: ['武陵山区沿途风光', '沱江黄昏+吊脚楼夜景'],
     food: ['血粑鸭', '酸汤鱼', '米豆腐', '蕨粑炒腊肉'],
     hotel: '凤凰等你来·江景客栈 或 7天酒店(凤凰古城店) · ¥180-200/间',
     stopFrom: 0, stopTo: 2, segIndex: 1,
-    note: '一天穿越湖北湖南两省，傍晚到凤凰拍夜景。国道过长建议选高速。'
+    note: '一天穿越湖北湖南直达凤凰。国道太长建议选高速，傍晚到拍夜景。'
   },
   { // Day 2 - 凤凰全天
     day: 2, date: '5月31日 周六', title: '凤凰古城全天',
@@ -305,7 +308,7 @@ const ITINERARY = [
     food: ['铜仁米豆腐', '江口豆腐干'],
     hotel: '梵净山梵行客栈 或 寨沙侗寨·梵静山舍 · ¥170-200/间',
     stopFrom: 2, stopTo: 3, segIndex: 2,
-    note: '早起再拍一次晨雾。上午买点姜糖伴手礼，中午出发。'
+    note: '早起再拍一次晨雾。上午买姜糖伴手礼，中午出发。'
   },
   { // Day 4
     day: 4, date: '6月2日 周一', title: '梵净山全天',
@@ -317,115 +320,115 @@ const ITINERARY = [
     stopFrom: 3, stopTo: 3, segIndex: -1,
     note: '提前查天气！大雾/大雨金顶可能关闭。门票需公众号预约。'
   },
-  { // Day 5
-    day: 5, date: '6月3日 周二', title: '梵净山 → 西江千户苗寨',
-    route_g: { path: 'G354→G320国道→凯里→西江', dist: '270km', time: '5.5-6.5h' },
-    route_s: { path: 'G56杭瑞→S62→G60沪昆', dist: '250km', time: '3.5-4h' },
-    sights: ['千户苗寨观景台全景日落', '风雨桥', '苗族歌舞表演'],
-    food: ['长桌宴（酸汤鱼、腊肉、米酒）'],
-    hotel: '西江千户苗寨·观景台客栈 或 西江998客栈 · ¥180-200/间',
+  { // Day 5 - NEW: 梵净山→镇远
+    day: 5, date: '6月3日 周二', title: '梵净山 → 镇远古镇',
+    route_g: { path: 'G354→S306省道', dist: '150km', time: '2.5-3h' },
+    route_s: { path: 'G56杭瑞→S25沿榕', dist: '130km', time: '2h' },
+    sights: ['镇远古镇', '舞阳河S弯全景（石屏山顶）', '祝圣桥', '青龙洞', '古巷道'],
+    food: ['豆花烤鱼（舞阳河边）', '道菜扣肉', '镇远米豆腐'],
+    hotel: '镇远古镇河边客栈 或 7天酒店(镇远古城店) · ¥170-200/间',
     stopFrom: 3, stopTo: 4, segIndex: 3,
-    note: '傍晚观景台看全景华灯初上——此行村寨系列的高潮时刻！'
+    note: '舞阳河S形穿城而过——石屏山顶俯拍是经典机位。黄昏+夜景都美！'
   },
   { // Day 6
-    day: 6, date: '6月4日 周三', title: '西江 → 贵阳',
-    route_g: { path: 'G320国道→沪瑞线', dist: '230km', time: '4.5-5h' },
-    route_s: { path: 'G60沪昆高速', dist: '200km', time: '2.5h' },
-    sights: ['苗寨晨雾+炊烟', '贵阳甲秀楼夜景', '二七路小吃街'],
-    food: ['丝娃娃（杨姨妈）', '肠旺面（金牌罗记）', '花溪牛肉粉'],
-    hotel: '7天优品(贵阳花果园店) 或 如家精选(贵阳喷水池店) · ¥180-200/间',
+    day: 6, date: '6月4日 周三', title: '镇远 → 西江千户苗寨',
+    route_g: { path: 'S306→G320国道→凯里→西江', dist: '120km', time: '2.5h' },
+    route_s: { path: 'S25沿榕→G60沪昆', dist: '110km', time: '1.5h' },
+    sights: ['镇远清晨河景', '千户苗寨观景台全景日落', '苗族歌舞表演'],
+    food: ['长桌宴（酸汤鱼、腊肉、米酒）'],
+    hotel: '西江千户苗寨·观景台客栈 或 西江998客栈 · ¥180-200/间',
     stopFrom: 4, stopTo: 5, segIndex: 4,
-    note: '清晨拍晨雾苗寨。G320国道沿途黔东南田园风光，下午到贵阳。'
+    note: '上午在镇远悠闲逛完，中午出发。傍晚观景台看苗寨全景华灯初上！'
   },
-  { // Day 7 - NEW: 贵阳全天
-    day: 7, date: '6月5日 周四', title: '贵阳全天休整',
+  { // Day 7 - NEW: 西江→荔波
+    day: 7, date: '6月5日 周四', title: '西江 → 荔波小七孔',
+    route_g: { path: 'G320→G321→G243国道', dist: '300km', time: '5.5-6.5h' },
+    route_s: { path: 'G60沪昆→G75兰海→S88麻驾', dist: '280km', time: '3.5h' },
+    sights: ['黔东南苗岭风光（沿途）', '荔波县城漳江夜景'],
+    food: ['荔波酸肉', '盐酸扣肉', '樟江烤鱼', '荔波米粉'],
+    hotel: '荔波小七孔景区附近客栈 或 7天酒店(荔波店) · ¥170-200/间',
+    stopFrom: 5, stopTo: 6, segIndex: 5,
+    note: '一路向南深入贵州腹地。到荔波后休整，为明天养精蓄锐。'
+  },
+  { // Day 8 - NEW: 荔波全天
+    day: 8, date: '6月6日 周五', title: '荔波小七孔全天',
+    route_g: { path: '小七孔+大七孔 · 全天游览', dist: '—', time: '—' },
+    route_s: { path: '小七孔+大七孔 · 全天游览', dist: '—', time: '—' },
+    sights: ['小七孔古桥', '拉雅瀑布', '水上森林', '卧龙潭', '鸳鸯湖', '大七孔天生桥'],
+    food: ['樟江烤鱼', '荔波酸肉', '盐酸扣肉', '簸箕宴'],
+    hotel: '荔波小七孔景区附近客栈 或 7天酒店(荔波店) 续住 · ¥170-200/间',
+    stopFrom: 6, stopTo: 6, segIndex: -1,
+    note: '世界自然遗产！建议东门进→西门出。卧龙潭的蓝绿色湖水是此行水景巅峰。'
+  },
+  { // Day 9
+    day: 9, date: '6月7日 周六', title: '荔波 → 贵阳',
+    route_g: { path: 'G243→G210国道', dist: '250km', time: '4.5-5h' },
+    route_s: { path: 'S88麻驾→G75兰海', dist: '240km', time: '3h' },
+    sights: ['贵阳甲秀楼夜景', '二七路小吃街'],
+    food: ['丝娃娃（杨姨妈）', '肠旺面（金牌罗记）', '花溪牛肉粉', '雷家豆腐圆子'],
+    hotel: '7天优品(贵阳花果园店) 或 如家精选(贵阳喷水池店) · ¥180-200/间',
+    stopFrom: 6, stopTo: 7, segIndex: 6,
+    note: '北上返回贵阳。傍晚到后逛甲秀楼+二七路小吃街。'
+  },
+  { // Day 10
+    day: 10, date: '6月8日 周日', title: '贵阳全天休整',
     route_g: { path: '贵阳市内游览', dist: '—', time: '—' },
     route_s: { path: '贵阳市内游览', dist: '—', time: '—' },
     sights: ['甲秀楼', '黔灵山公园（看猕猴）', '青岩古镇', '花溪公园'],
     food: ['丝娃娃', '肠旺面', '花溪牛肉粉', '雷家豆腐圆子', '青岩猪蹄'],
     hotel: '7天优品(贵阳花果园店) 或 如家精选(贵阳喷水池店) 续住 · ¥180-200/间',
-    stopFrom: 5, stopTo: 5, segIndex: -1,
+    stopFrom: 7, stopTo: 7, segIndex: -1,
     note: '休整一天！逛吃贵阳，给身体和相机充电。青岩古镇距市区30分钟车程。'
   },
-  { // Day 8
-    day: 8, date: '6月6日 周五', title: '贵阳 → 黄果树 → 安顺',
+  { // Day 11
+    day: 11, date: '6月9日 周一', title: '贵阳 → 黄果树 → 安顺',
     route_g: { path: 'G320贵黄公路(国道)', dist: '140km', time: '2.5-3h' },
     route_s: { path: 'G60沪昆高速', dist: '130km', time: '1.5h' },
     sights: ['黄果树大瀑布+水帘洞', '陡坡塘瀑布', '天星桥'],
     food: ['安顺裹卷', '夺夺粉火锅', '油炸粑'],
     hotel: '黄果树开元颐居酒店 或 如家酒店(安顺火车站店) · ¥170-200/间',
-    stopFrom: 5, stopTo: 6, segIndex: 5,
-    note: '游览顺序：陡坡塘→天星桥→大瀑布（下午光线+水量最大）。6月水量最壮观！'
+    stopFrom: 7, stopTo: 8, segIndex: 7,
+    note: '游览：陡坡塘→天星桥→大瀑布（下午光线+水量最大）。6月水量最壮观！'
   },
-  { // Day 9
-    day: 9, date: '6月7日 周六', title: '龙宫 + 云峰屯堡',
+  { // Day 12
+    day: 12, date: '6月10日 周二', title: '龙宫 + 云峰屯堡',
     route_g: { path: 'X007县道→S209', dist: '55km', time: '1.5h' },
     route_s: { path: 'X007县道→S209', dist: '55km', time: '1.5h' },
     sights: ['龙宫水溶洞（乘船游览）', '云峰屯堡（明代军屯石板房）'],
     food: ['屯堡鸡辣子', '腊肉血豆腐', '花江狗肉粉'],
     hotel: '如家酒店(安顺火车站店) 或 旧州客栈 · ¥160-190/间',
-    stopFrom: 6, stopTo: 8, segIndex: 7,
+    stopFrom: 8, stopTo: 10, segIndex: 9,
     note: '云峰屯堡拍明代服饰老人是宝藏题材！以安顺为基地往返。'
   },
-  { // Day 10
-    day: 10, date: '6月8日 周日', title: '安顺 → 织金洞 → 遵义',
+  { // Day 13
+    day: 13, date: '6月11日 周三', title: '安顺 → 织金洞 → 遵义',
     route_g: { path: 'S209→G321→G326国道', dist: '300km', time: '6-7h' },
     route_s: { path: 'G60沪昆→G75兰海', dist: '280km', time: '3.5h' },
     sights: ['织金洞（"溶洞之王"）', '捞沙巷美食街'],
     food: ['织金发粑', '荞凉粉', '遵义羊肉粉', '豆花面', '刘二妈米皮'],
     hotel: '7天酒店(遵义会址店) 或 遵义红城客栈 · ¥160-190/间',
-    stopFrom: 6, stopTo: 10, segIndex: 10,
-    note: '织金洞溶洞之王，2-3小时游览。雨天最佳备选方案。傍晚到遵义逛捞沙巷。'
+    stopFrom: 8, stopTo: 12, segIndex: 12,
+    note: '织金洞"溶洞之王"，2-3小时游览。雨天最佳备选方案。傍晚到遵义逛捞沙巷。'
   },
-  { // Day 11
-    day: 11, date: '6月9日 周一', title: '遵义 → 茅台 → 赤水',
+  { // Day 14
+    day: 14, date: '6月12日 周四', title: '遵义 → 茅台 → 赤水',
     route_g: { path: 'G326→G212国道(赤水河谷)', dist: '220km', time: '4.5-5h' },
     route_s: { path: 'G4215蓉遵高速', dist: '200km', time: '2.5h' },
-    sights: ['遵义会议会址', '茅台杨柳湾古街', '1915广场', '赤水河边夜景'],
+    sights: ['遵义会议会址', '茅台杨柳湾古街', '赤水河边夜景'],
     food: ['茅台镇酱香白酒品尝', '赤水豆花', '筒筒笋炖腊猪脚', '赤水河鲜鱼'],
     hotel: '如家酒店(赤水河滨路店) 或 赤水丹霞客栈 · ¥160-190/间',
-    stopFrom: 10, stopTo: 12, segIndex: 12,
-    note: 'G326→G212国道穿行赤水河谷，风景极美。茅台整座镇飘着酒香！'
+    stopFrom: 12, stopTo: 14, segIndex: 14,
+    note: '上午遵义会址，中午到茅台（整座镇飘着酒香！）。赤水河畔住下。'
   },
-  { // Day 12
-    day: 12, date: '6月10日 周二', title: '赤水丹霞全天',
-    route_g: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
-    route_s: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
-    sights: ['赤水大瀑布（十丈洞）', '佛光岩（弧形丹霞绝壁）'],
-    food: ['赤水烧烤', '猪儿粑', '竹荪蛋汤'],
-    hotel: '如家酒店(赤水河滨路店) 或 赤水丹霞客栈（续住）· ¥160-190/间',
-    stopFrom: 12, stopTo: 12, segIndex: -1,
-    note: '佛光岩下午阳光打上岩壁呈金红色——此行丹霞精华！'
-  },
-  { // Day 13
-    day: 13, date: '6月11日 周三', title: '赤水 → 恩施',
-    route_g: { path: 'G546→G318→G209国道', dist: '520km', time: '9-10h' },
-    route_s: { path: 'G4215蓉遵→重庆绕城→G50沪渝', dist: '500km', time: '5-6h' },
-    sights: ['恩施土司城（九进堂建筑群）'],
-    food: ['张关合渣', '土家酱香饼', '腊蹄子火锅'],
-    hotel: '如家酒店(恩施土司城店) 或 城市便捷(恩施火车站店) · ¥170-200/间',
-    stopFrom: 12, stopTo: 13, segIndex: 13,
-    note: '穿重庆南部入鄂西。国道过长，推荐走高速。'
-  },
-  { // Day 14 - NEW: 恩施全天
-    day: 14, date: '6月12日 周四', title: '恩施全天',
-    route_g: { path: '恩施市内及周边游览', dist: '—', time: '—' },
-    route_s: { path: '恩施市内及周边游览', dist: '—', time: '—' },
-    sights: ['恩施土司城', '恩施女儿城', '恩施大峡谷（可选）'],
-    food: ['张关合渣', '土家酱香饼', '腊蹄子火锅', '恩施豆皮', '油香儿'],
-    hotel: '如家酒店(恩施土司城店) 或 城市便捷(恩施火车站店) 续住 · ¥170-200/间',
-    stopFrom: 13, stopTo: 13, segIndex: -1,
-    note: '休整一天。土司城+女儿城轻松逛，体力好可去大峡谷（需一整天）。'
-  },
-  { // Day 15
-    day: 15, date: '6月13日 周五', title: '恩施 → 武汉',
-    route_g: { path: 'G318国道(恩施→宜昌峡谷段)+G50高速(宜昌→武汉)', dist: '530km', time: '7-8h' },
-    route_s: { path: 'G50沪渝高速全程', dist: '530km', time: '6-7h' },
-    sights: ['四渡河大桥（世界第二高桥）', '宜昌滨江公园', '清江画廊（顺路）'],
-    food: ['宜昌凉虾', '萝卜饺子', '清江鱼火锅（宜昌午餐）'],
+  { // Day 15 - 赤水丹霞 + 返程
+    day: 15, date: '6月13日 周五', title: '赤水丹霞 → 重庆 → 武汉',
+    route_g: { path: '上午赤水大瀑布→G546→重庆→G50沪渝', dist: '赤水游玩+返程960km', time: '游玩2h+返程10h' },
+    route_s: { path: '上午赤水大瀑布→G4215→重庆→G50沪渝', dist: '赤水游玩+返程900km', time: '游玩2h+返程9h' },
+    sights: ['赤水大瀑布（十丈洞）', '佛光岩（二选一：十丈洞更顺路）', '重庆午餐火锅'],
+    food: ['赤水豆花', '重庆火锅（午餐）', '宜昌晚餐（如经停）'],
     hotel: '🏠 回到温暖的家',
-    stopFrom: 13, stopTo: 0, segIndex: 14,
-    note: '恩施→宜昌段推荐G318国道（鄂西峡谷风景精华段），宜昌之后走高速回家。'
+    stopFrom: 14, stopTo: 0, segIndex: 16,
+    note: '最后一天：上午看赤水大瀑布，中午到重庆吃火锅，傍晚一路高速返武汉。'
   }
 ];
 
@@ -572,7 +575,7 @@ function drawAllRoutes() {
       '#3498db', '#2ecc71', '#1abc9c', '#9b59b6', '#e74c3c',
       '#f39c12', '#e91e63', '#00bcd4', '#ff5722', '#8bc34a',
       '#3f51b5', '#ff9800', '#009688', '#673ab7', '#cddc39',
-      '#795548'
+      '#795548', '#e040fb'
     ];
 
     // Draw routes sequentially with delay to respect API rate limits
