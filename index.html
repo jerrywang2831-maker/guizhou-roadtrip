@@ -436,6 +436,8 @@ const ITINERARY = [
 let map, markers = [], polylines = [];
 let activeDay = 0;
 let routeMode = 'g'; // 'g' = 国道优先, 's' = 高速优先
+let routeLinesG = []; // 国道路线 polylines
+let routeLinesS = []; // 高速路线 polylines
 let allRoutePaths = []; // store all driving paths for re-drawing
 
 // ==================== INIT ====================
@@ -578,82 +580,93 @@ function drawAllRoutes() {
       '#795548', '#e040fb'
     ];
 
-    // Draw routes sequentially with delay to respect API rate limits
-    let completedCount = 0;
+    let completedG = 0, completedS = 0;
+    const total = SEGMENTS.length;
+
+    function createPolyline(path, color, style) {
+      return new AMap.Polyline({
+        path: path, strokeColor: color, strokeWeight: 4,
+        strokeOpacity: 0.5, lineJoin: 'round', zIndex: 50,
+        strokeStyle: style || 'solid',
+      });
+    }
+
+    function extractPath(result) {
+      if (result && result.routes && result.routes.length > 0) {
+        const steps = result.routes[0].steps;
+        let path = [];
+        steps.forEach(s => { path = path.concat(s.path); });
+        return path;
+      }
+      return null;
+    }
 
     SEGMENTS.forEach((seg, idx) => {
-      const driving = new AMap.Driving({
-        policy: AMap.DrivingPolicy.LEAST_TIME,
-      });
+      const origin = new AMap.LngLat(STOPS[seg.from].lng, STOPS[seg.from].lat);
+      const dest = new AMap.LngLat(STOPS[seg.to].lng, STOPS[seg.to].lat);
+      const color = drivingColors[idx % drivingColors.length];
 
-      const origin = STOPS[seg.from];
-      const dest = STOPS[seg.to];
-
+      // === 国道路线 (avoid highways) ===
       setTimeout(() => {
-        driving.search(
-          new AMap.LngLat(origin.lng, origin.lat),
-          new AMap.LngLat(dest.lng, dest.lat),
-          (status, result) => {
-            if (status === 'complete' && result.routes && result.routes.length > 0) {
-              const steps = result.routes[0].steps;
-              let path = [];
-              steps.forEach(step => {
-                path = path.concat(step.path);
-              });
-
-              const polyline = new AMap.Polyline({
-                path: path,
-                strokeColor: drivingColors[idx % drivingColors.length],
-                strokeWeight: 4,
-                strokeOpacity: 0.5,
-                lineJoin: 'round',
-                zIndex: 50,
-              });
-              polyline.setMap(map);
-              polylines.push({ polyline, segIndex: idx, color: drivingColors[idx % drivingColors.length] });
-              allRoutePaths[idx] = { path, color: drivingColors[idx % drivingColors.length] };
-            } else {
-              // Fallback: draw straight line
-              const fallbackPath = [
-                [origin.lng, origin.lat],
-                [dest.lng, dest.lat]
-              ];
-              const polyline = new AMap.Polyline({
-                path: fallbackPath,
-                strokeColor: drivingColors[idx % drivingColors.length],
-                strokeWeight: 3,
-                strokeOpacity: 0.4,
-                strokeStyle: 'dashed',
-                zIndex: 50,
-              });
-              polyline.setMap(map);
-              polylines.push({ polyline, segIndex: idx, color: drivingColors[idx % drivingColors.length] });
-              allRoutePaths[idx] = { path: fallbackPath, color: drivingColors[idx % drivingColors.length] };
-            }
-
-            completedCount++;
-            if (completedCount === SEGMENTS.length) {
-              highlightDayRoute(activeDay);
-            }
+        const dG = new AMap.Driving({ policy: AMap.DrivingPolicy.LEAST_TIME });
+        dG.search(origin, dest, { avoidhighway: true }, (status, result) => {
+          const path = extractPath(result);
+          if (path) {
+            const pl = createPolyline(path, color);
+            pl.setMap(routeMode === 'g' ? map : null); // show if 国道 mode
+            routeLinesG[idx] = { polyline: pl, segIndex: idx, color: color, path: path };
+          } else {
+            // Fallback straight line
+            const fb = [[STOPS[seg.from].lng, STOPS[seg.from].lat], [STOPS[seg.to].lng, STOPS[seg.to].lat]];
+            const pl = createPolyline(fb, color, 'dashed');
+            pl.setMap(routeMode === 'g' ? map : null);
+            routeLinesG[idx] = { polyline: pl, segIndex: idx, color: color, path: fb };
           }
-        );
-      }, idx * 200); // Stagger requests by 200ms
+          completedG++;
+          if (completedG === total && completedS === total) { highlightDayRoute(activeDay); }
+        });
+      }, idx * 400);
+
+      // === 高速路线 (default, prefers highways) ===
+      setTimeout(() => {
+        const dS = new AMap.Driving({ policy: AMap.DrivingPolicy.LEAST_TIME });
+        dS.search(origin, dest, (status, result) => {
+          const path = extractPath(result);
+          if (path) {
+            const pl = createPolyline(path, color);
+            pl.setMap(routeMode === 's' ? map : null); // show if 高速 mode
+            routeLinesS[idx] = { polyline: pl, segIndex: idx, color: color, path: path };
+          } else {
+            const fb = [[STOPS[seg.from].lng, STOPS[seg.from].lat], [STOPS[seg.to].lng, STOPS[seg.to].lat]];
+            const pl = createPolyline(fb, color, 'dashed');
+            pl.setMap(routeMode === 's' ? map : null);
+            routeLinesS[idx] = { polyline: pl, segIndex: idx, color: color, path: fb };
+          }
+          completedS++;
+          if (completedG === total && completedS === total) { highlightDayRoute(activeDay); }
+        });
+      }, idx * 400 + 200);
     });
   });
 }
 
 // ==================== HIGHLIGHT CURRENT DAY ====================
+function getActiveLines() {
+  return routeMode === 'g' ? routeLinesG : routeLinesS;
+}
+
 function highlightDayRoute(dayIndex) {
   const day = ITINERARY[dayIndex];
+  const lines = getActiveLines();
 
-  // Reset all polylines
-  polylines.forEach(p => {
-    p.polyline.setOptions({
-      strokeWeight: 4,
-      strokeOpacity: 0.5,
-      strokeColor: p.color,
-      zIndex: 50,
-    });
+  // Reset all active polylines to default style
+  lines.forEach(p => {
+    if (p && p.polyline) {
+      p.polyline.setOptions({
+        strokeWeight: 4, strokeOpacity: 0.5,
+        strokeColor: p.color, zIndex: 50,
+      });
+    }
   });
 
   // Reset all markers
@@ -663,30 +676,24 @@ function highlightDayRoute(dayIndex) {
   });
 
   // Highlight current segment
-  if (day.segIndex >= 0 && polylines[day.segIndex]) {
-    polylines[day.segIndex].polyline.setOptions({
-      strokeWeight: 8,
-      strokeOpacity: 1,
-      strokeColor: '#f39c12',
-      zIndex: 90,
+  if (day.segIndex >= 0 && lines[day.segIndex]) {
+    lines[day.segIndex].polyline.setOptions({
+      strokeWeight: 8, strokeOpacity: 1,
+      strokeColor: '#f39c12', zIndex: 90,
     });
   }
 
   // Highlight current stop markers
-  const highlightStops = [day.stopFrom, day.stopTo];
-  highlightStops.forEach(si => {
+  [day.stopFrom, day.stopTo].forEach(si => {
     const el = document.getElementById(`marker-${si}`);
     if (el) el.classList.add('highlight');
   });
 
-  // Update day label
   updateDayLabel();
 
-  // Scroll sidebar
   const card = document.getElementById(`day-card-${dayIndex}`);
   if (card) {
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    // Update active state
     document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
   }
@@ -734,14 +741,13 @@ function zoomIn() { map.zoomIn(); }
 function zoomOut() { map.zoomOut(); }
 
 function focusOverview() {
-  map.setZoomAndCenter(7, [110.5, 29.5]);
-  // Reset all highlights
-  polylines.forEach(p => {
-    p.polyline.setOptions({
-      strokeWeight: 4,
-      strokeOpacity: 0.5,
-      strokeColor: p.color,
-      zIndex: 50,
+  map.setZoomAndCenter(7, [108.5, 28.0]);
+  // Reset both route sets
+  [routeLinesG, routeLinesS].forEach(lines => {
+    lines.forEach(p => {
+      if (p && p.polyline) {
+        p.polyline.setOptions({ strokeWeight: 4, strokeOpacity: 0.5, strokeColor: p.color, zIndex: 50 });
+      }
     });
   });
   markers.forEach(m => {
@@ -758,8 +764,16 @@ function toggleRouteMode() {
   routeMode = sw.checked ? 's' : 'g';
   document.getElementById('lbl-guodao').classList.toggle('active', !sw.checked);
   document.getElementById('lbl-gaosu').classList.toggle('active', sw.checked);
+
+  // Swap visible polylines on the map
+  const hideLines = routeMode === 'g' ? routeLinesS : routeLinesG;
+  const showLines = routeMode === 'g' ? routeLinesG : routeLinesS;
+
+  hideLines.forEach(p => { if (p && p.polyline) p.polyline.setMap(null); });
+  showLines.forEach(p => { if (p && p.polyline) p.polyline.setMap(map); });
+
   renderSidebar();
-  updateDayLabel();
+  highlightDayRoute(activeDay);
 }
 
 function updateDayLabel() {
