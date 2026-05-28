@@ -182,7 +182,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
     <div id="sidebar">
       <div id="sidebar-header">
         <h2>📋 行程总览</h2>
-        <p>湖南：常德桃花源→凤凰半日｜ 贵州段：梵净山·镇远·荔波·黄果树·赤水 ｜ 回程：重庆→武汉</p>
+        <p>湖南：常德桃花源→凤凰半日｜ 贵州段：梵净山·镇远·荔波·黄果树·赤水 ｜ 重庆住一晚→武汉</p>
         <div class="route-mode-toggle">
           <span class="toggle-label active" id="lbl-guodao">🛣 国道优先</span>
           <label class="toggle-switch">
@@ -408,27 +408,27 @@ const ITINERARY = [
     food: ['茅台镇酱香白酒品尝', '赤水豆花', '筒筒笋炖腊猪脚', '赤水河鲜鱼'],
     hotel: '如家酒店(赤水河滨路店) 或 赤水丹霞客栈 · ¥160-190/间',
     stopFrom: 12, stopTo: 14, segIndex: 14,
-    note: '上午遵义会址，中午到茅台（整座镇飘着酒香！）。赤水河畔住下。'
+    note: '上午遵义会址，中午到茅台（整座镇飘着酒香！），傍晚到赤水河畔住下。'
   },
-  { // Day 14
-    day: 14, date: '6月12日 周四', title: '赤水丹霞全天',
-    route_g: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
-    route_s: { path: '上午十丈洞 → 下午佛光岩', dist: '—', time: '—' },
-    sights: ['赤水大瀑布（十丈洞）', '佛光岩（弧形丹霞绝壁）'],
-    food: ['赤水烧烤', '猪儿粑', '竹荪蛋汤'],
-    hotel: '如家酒店(赤水河滨路店) 或 赤水丹霞客栈（续住）· ¥160-190/间',
-    stopFrom: 14, stopTo: 14, segIndex: -1,
-    note: '佛光岩下午阳光打上岩壁呈金红色——此行丹霞精华！'
+  { // Day 14 - 赤水上午丹霞 + 下午出发重庆
+    day: 14, date: '6月12日 周四', title: '赤水丹霞 → 重庆',
+    route_g: { path: '上午赤水大瀑布→G546国道→重庆', dist: '赤水游玩+200km', time: '游玩2h+车程3h' },
+    route_s: { path: '上午赤水大瀑布→G4215→重庆', dist: '赤水游玩+200km', time: '游玩2h+车程2h' },
+    sights: ['赤水大瀑布·十丈洞（上午，比黄果树还高8m）', '重庆解放碑', '洪崖洞夜景', '长江索道'],
+    food: ['赤水豆花（早餐）', '重庆火锅（晚餐必吃！）', '重庆小面'],
+    hotel: '7天酒店(重庆解放碑店) 或 如家酒店(重庆洪崖洞店) · ¥180-200/间',
+    stopFrom: 14, stopTo: 15, segIndex: 15,
+    note: '上午看完十丈洞约10点出发，中午到重庆。下午解放碑+洪崖洞，晚上火锅！'
   },
-  { // Day 15
-    day: 15, date: '6月13日 周五', title: '赤水 → 重庆 → 武汉',
-    route_g: { path: '上午赤水大瀑布→G546→重庆→G50沪渝', dist: '游玩+返程960km', time: '游玩2h+返程10h' },
-    route_s: { path: 'G4215蓉遵→重庆绕城→G50沪渝', dist: '900km', time: '游玩2h+返程9h' },
-    sights: ['赤水大瀑布（十丈洞）', '重庆午餐火锅'],
-    food: ['赤水豆花', '重庆火锅（午餐）'],
+  { // Day 15 - 重庆直接回武汉
+    day: 15, date: '6月13日 周五', title: '重庆 → 武汉',
+    route_g: { path: 'G318国道(重庆→恩施峡谷段)→G50沪渝(宜昌→武汉)', dist: '850km', time: '9-10h' },
+    route_s: { path: 'G50沪渝高速全程', dist: '850km', time: '8-9h' },
+    sights: ['恩施四渡河大桥（途经）', '宜昌滨江公园（午餐休息）'],
+    food: ['重庆小面（早餐）', '宜昌凉虾', '清江鱼火锅（宜昌午餐）'],
     hotel: '🏠 回到温暖的家',
-    stopFrom: 14, stopTo: 0, segIndex: 16,
-    note: '上午看赤水大瀑布（选十丈洞最顺路），中午重庆火锅，之后一路高速返汉。'
+    stopFrom: 15, stopTo: 0, segIndex: 16,
+    note: '最后一天全程高速回家。早8点出发，经恩施、宜昌，傍晚到武汉。'
   }
 ];
 
@@ -601,51 +601,57 @@ function drawAllRoutes() {
       return null;
     }
 
+    function straightFallback(seg) {
+      return [[STOPS[seg.from].lng, STOPS[seg.from].lat], [STOPS[seg.to].lng, STOPS[seg.to].lat]];
+    }
+
+    function searchRoute(origin, dest, policy, callback) {
+      const d = new AMap.Driving({ policy: policy });
+      d.search(origin, dest, (status, result) => {
+        callback(status === 'complete' ? extractPath(result) : null);
+      });
+    }
+
     SEGMENTS.forEach((seg, idx) => {
       const origin = new AMap.LngLat(STOPS[seg.from].lng, STOPS[seg.from].lat);
       const dest = new AMap.LngLat(STOPS[seg.to].lng, STOPS[seg.to].lat);
       const color = drivingColors[idx % drivingColors.length];
+      const fbPath = straightFallback(seg);
 
-      // === 国道路线 (LEAST_FEE = avoid toll highways) ===
+      // === 国道路线：先试 LEAST_FEE，失败则回退到 LEAST_TIME ===
       setTimeout(() => {
-        const dG = new AMap.Driving({ policy: AMap.DrivingPolicy.LEAST_FEE });
-        dG.search(origin, dest, (status, result) => {
-          const path = extractPath(result);
+        searchRoute(origin, dest, AMap.DrivingPolicy.LEAST_FEE, (path) => {
           if (path) {
             const pl = createPolyline(path, color);
-            pl.setMap(routeMode === 'g' ? map : null); // show if 国道 mode
+            pl.setMap(routeMode === 'g' ? map : null);
             routeLinesG[idx] = { polyline: pl, segIndex: idx, color: color, path: path };
           } else {
-            // Fallback straight line
-            const fb = [[STOPS[seg.from].lng, STOPS[seg.from].lat], [STOPS[seg.to].lng, STOPS[seg.to].lat]];
-            const pl = createPolyline(fb, color, 'dashed');
-            pl.setMap(routeMode === 'g' ? map : null);
-            routeLinesG[idx] = { polyline: pl, segIndex: idx, color: color, path: fb };
+            // 国道搜索失败，用高速路线作为 fallback
+            searchRoute(origin, dest, AMap.DrivingPolicy.LEAST_TIME, (fbPath2) => {
+              const finalPath = fbPath2 || fbPath;
+              const pl = createPolyline(finalPath, color, fbPath2 ? 'solid' : 'dashed');
+              pl.setMap(routeMode === 'g' ? map : null);
+              routeLinesG[idx] = { polyline: pl, segIndex: idx, color: color, path: finalPath };
+              finishG();
+            });
+            return;
           }
-          completedG++;
-          if (completedG === total && completedS === total) { highlightDayRoute(activeDay); }
+          finishG();
         });
-      }, idx * 400);
+        function finishG() { completedG++; if (completedG >= total && completedS >= total) highlightDayRoute(activeDay); }
+      }, idx * 500);
 
-      // === 高速路线 (default, prefers highways) ===
+      // === 高速路线：LEAST_TIME, 失败 fallback straight line ===
       setTimeout(() => {
-        const dS = new AMap.Driving({ policy: AMap.DrivingPolicy.LEAST_TIME });
-        dS.search(origin, dest, (status, result) => {
-          const path = extractPath(result);
-          if (path) {
-            const pl = createPolyline(path, color);
-            pl.setMap(routeMode === 's' ? map : null); // show if 高速 mode
-            routeLinesS[idx] = { polyline: pl, segIndex: idx, color: color, path: path };
-          } else {
-            const fb = [[STOPS[seg.from].lng, STOPS[seg.from].lat], [STOPS[seg.to].lng, STOPS[seg.to].lat]];
-            const pl = createPolyline(fb, color, 'dashed');
-            pl.setMap(routeMode === 's' ? map : null);
-            routeLinesS[idx] = { polyline: pl, segIndex: idx, color: color, path: fb };
-          }
+        searchRoute(origin, dest, AMap.DrivingPolicy.LEAST_TIME, (path) => {
+          const finalPath = path || fbPath;
+          const pl = createPolyline(finalPath, color, path ? 'solid' : 'dashed');
+          pl.setMap(routeMode === 's' ? map : null);
+          routeLinesS[idx] = { polyline: pl, segIndex: idx, color: color, path: finalPath };
           completedS++;
-          if (completedG === total && completedS === total) { highlightDayRoute(activeDay); }
+          if (completedG >= total && completedS >= total) highlightDayRoute(activeDay);
         });
-      }, idx * 400 + 200);
+      }, idx * 500 + 250);
     });
   });
 }
