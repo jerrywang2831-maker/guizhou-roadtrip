@@ -241,54 +241,52 @@ const AMAP_KEY = 'd944d2a22335bd05e4beefdd00e405c5';
 // ==================== DATA: All Unique Stops ====================
 const STOPS = [
   { id: 0,  name: '武汉',     lat: 30.5928, lng: 114.3055, type: 'start' },
-  { id: 1,  name: '荆州',     lat: 30.3352, lng: 112.2410, type: 'stop' },
-  { id: 2,  name: '常德',     lat: 29.0316, lng: 111.6985, type: 'stop' },
-  { id: 3,  name: '凤凰古城', lat: 27.9483, lng: 109.5989, type: 'highlight' },
-  { id: 4,  name: '梵净山(江口)', lat: 27.7400, lng: 108.8100, type: 'highlight' },
-  { id: 5,  name: '西江千户苗寨', lat: 26.4939, lng: 108.1740, type: 'highlight' },
-  { id: 6,  name: '荔波小七孔', lat: 25.4120, lng: 107.8860, type: 'highlight' },
-  { id: 7,  name: '贵阳',     lat: 26.6468, lng: 106.6292, type: 'stop' },
-  { id: 8,  name: '黄果树瀑布', lat: 25.9922, lng: 105.6667, type: 'highlight' },
-  { id: 9,  name: '龙宫',     lat: 26.1300, lng: 105.8900, type: 'stop' },
-  { id: 10, name: '云峰屯堡', lat: 26.2100, lng: 106.0500, type: 'stop' },
-  { id: 11, name: '织金洞',   lat: 26.7400, lng: 105.8700, type: 'stop' },
-  { id: 12, name: '遵义',     lat: 27.7212, lng: 106.9273, type: 'stop' },
-  { id: 13, name: '茅台镇',   lat: 27.8530, lng: 106.3700, type: 'stop' },
-  { id: 14, name: '恩施',     lat: 30.2836, lng: 109.4867, type: 'stop' },
-  { id: 15, name: '宜昌',     lat: 30.6918, lng: 111.2864, type: 'stop' },
+  { id: 1,  name: '常德',     lat: 29.0316, lng: 111.6985, type: 'stop' },
+  { id: 2,  name: '凤凰古城', lat: 27.9483, lng: 109.5989, type: 'highlight' },
+  { id: 3,  name: '梵净山(江口)', lat: 27.7400, lng: 108.8100, type: 'highlight' },
+  { id: 4,  name: '西江千户苗寨', lat: 26.4939, lng: 108.1740, type: 'highlight' },
+  { id: 5,  name: '荔波小七孔', lat: 25.4120, lng: 107.8860, type: 'highlight' },
+  { id: 6,  name: '贵阳',     lat: 26.6468, lng: 106.6292, type: 'stop' },
+  { id: 7,  name: '黄果树瀑布', lat: 25.9922, lng: 105.6667, type: 'highlight' },
+  { id: 8,  name: '龙宫',     lat: 26.1300, lng: 105.8900, type: 'stop' },
+  { id: 9,  name: '云峰屯堡', lat: 26.2100, lng: 106.0500, type: 'stop' },
+  { id: 10, name: '织金洞',   lat: 26.7400, lng: 105.8700, type: 'stop' },
+  { id: 11, name: '遵义',     lat: 27.7212, lng: 106.9273, type: 'stop' },
+  { id: 12, name: '茅台镇',   lat: 27.8530, lng: 106.3700, type: 'stop' },
+  { id: 13, name: '恩施',     lat: 30.2836, lng: 109.4867, type: 'stop' },
+  { id: 14, name: '宜昌',     lat: 30.6918, lng: 111.2864, type: 'stop' },
 ];
 
 // ==================== DATA: Route Segments (consecutive stop pairs) ====================
 const SEGMENTS = [
-  { from: 0, to: 1 },   // 武汉→荆州
-  { from: 1, to: 2 },   // 荆州→常德
-  { from: 2, to: 3 },   // 常德→凤凰
-  { from: 3, to: 4 },   // 凤凰→梵净山
-  { from: 4, to: 5 },   // 梵净山→西江苗寨
-  { from: 5, to: 6 },   // 西江→荔波
-  { from: 6, to: 7 },   // 荔波→贵阳
-  { from: 7, to: 8 },   // 贵阳→黄果树
-  { from: 8, to: 9 },   // 黄果树→龙宫
-  { from: 9, to: 10 },  // 龙宫→云峰屯堡
-  { from: 10, to: 8 },  // 云峰屯堡→安顺(返回)
-  { from: 8, to: 11 },  // 安顺→织金洞
-  { from: 11, to: 12 }, // 织金洞→遵义
-  { from: 12, to: 13 }, // 遵义→茅台
-  { from: 13, to: 14 }, // 茅台→恩施
-  { from: 14, to: 15 }, // 恩施→宜昌
-  { from: 15, to: 0 },  // 宜昌→武汉
+  { from: 0, to: 1 },   // 武汉→常德
+  { from: 1, to: 2 },   // 常德→凤凰
+  { from: 2, to: 3 },   // 凤凰→梵净山
+  { from: 3, to: 4 },   // 梵净山→西江苗寨
+  { from: 4, to: 5 },   // 西江→荔波
+  { from: 5, to: 6 },   // 荔波→贵阳
+  { from: 6, to: 7 },   // 贵阳→黄果树
+  { from: 7, to: 8 },   // 黄果树→龙宫
+  { from: 8, to: 9 },   // 龙宫→云峰屯堡
+  { from: 9, to: 7 },   // 云峰屯堡→安顺(返回)
+  { from: 7, to: 10 },  // 安顺→织金洞
+  { from: 10, to: 11 }, // 织金洞→遵义
+  { from: 11, to: 12 }, // 遵义→茅台
+  { from: 12, to: 13 }, // 茅台→恩施
+  { from: 13, to: 14 }, // 恩施→宜昌
+  { from: 14, to: 0 },  // 宜昌→武汉
 ];
 
 // ==================== DATA: Day-by-Day Itinerary ====================
 const ITINERARY = [
-  { day: 1, date: '5月30日 周五', title: '武汉 → 荆州 → 常德',
-    route_g: { path: 'G318→荆州(220km)→G207→常德(210km)', dist: '430km', time: '8-9h' },
-    route_s: { path: 'G50沪渝→荆州(210km)→G55二广→常德(200km)', dist: '400km', time: '4.5h' },
-    sights: ['荆州古城墙（东门段免费）', '荆州博物馆', '常德柳叶湖', '常德诗墙'],
-    food: ['荆州鱼糕', '公安牛肉火锅', '荆州锅盔（午餐）', '常德牛肉粉', '酱板鸭', '擂茶'],
-    hotel: '城市便捷酒店(常德柳叶湖店) 或 7天酒店(常德武陵大道店) · ¥150-170/间',
-    stopFrom: 0, stopTo: 2, segIndex: 1,
-    note: '上午到荆州（2.5h），逛古城+博物馆+午餐（3h），下午2h到常德。荆州值得停留！'
+  { day: 1, date: '5月30日 周五', title: '武汉 → 常德',
+    route_g: { path: 'G318→G207→G319国道', dist: '430km', time: '8-9h' },
+    route_s: { path: 'G50沪渝→G55二广高速', dist: '400km', time: '4.5h' },
+    sights: ['荆州古城墙（途经午餐）', '荆州博物馆', '常德柳叶湖', '常德诗墙'],
+    food: ['荆州鱼糕、锅盔（午餐）', '常德牛肉粉（杨永胜）', '酱板鸭', '擂茶'],
+    hotel: '城市便捷酒店(常德柳叶湖店) · ¥150-170/间',
+    stopFrom: 0, stopTo: 1, segIndex: 0,
+    note: '穿江汉平原进湖南。经荆州午餐歇脚，傍晚到常德逛柳叶湖。'
   },
   { day: 2, date: '5月31日 周六', title: '常德 → 凤凰古城',
     route_g: { path: 'G319→吉首→G209国道', dist: '280km', time: '5-6h' },
@@ -296,8 +294,8 @@ const ITINERARY = [
     sights: ['常德桃花源（上午，可选）', '武陵山区沿途风光', '沱江黄昏+吊脚楼夜景'],
     food: ['血粑鸭', '酸汤鱼', '米豆腐', '蕨粑炒腊肉', '姜糖'],
     hotel: '凤凰等你来·江景客栈 或 7天酒店(凤凰古城店) · ¥180-200/间',
-    stopFrom: 2, stopTo: 3, segIndex: 2,
-    note: '上午可去桃花源（常德西南30km），中午出发，下午到凤凰拍黄昏+夜景。'
+    stopFrom: 1, stopTo: 2, segIndex: 1,
+    note: '上午可去桃花源，中午出发，下午到凤凰拍黄昏+夜景。'
   },
   { day: 3, date: '6月1日 周日', title: '凤凰 → 梵净山',
     route_g: { path: 'G354国道→江口县', dist: '150km', time: '3h' },
@@ -305,7 +303,7 @@ const ITINERARY = [
     sights: ['沱江晨雾（6:00-7:30 必拍！）', '虹桥', '跳岩', '沈从文故居'],
     food: ['铜仁米豆腐', '江口豆腐干'],
     hotel: '梵净山梵行客栈 或 寨沙侗寨·梵静山舍 · ¥170-200/间',
-    stopFrom: 3, stopTo: 4, segIndex: 3,
+    stopFrom: 2, stopTo: 3, segIndex: 2,
     note: '早起拍沱江晨雾（此行最佳古镇拍摄时机），上午逛完古城，中午出发。'
   },
   { day: 4, date: '6月2日 周一', title: '梵净山全天',
@@ -314,7 +312,7 @@ const ITINERARY = [
     sights: ['红云金顶', '蘑菇石', '承恩寺', '万米睡佛'],
     food: ['铜仁锅巴粉', '社饭（土家族传统饭食）'],
     hotel: '梵净山梵行客栈 或 寨沙侗寨·梵静山舍（续住）· ¥170-200/间',
-    stopFrom: 4, stopTo: 4, segIndex: -1,
+    stopFrom: 3, stopTo: 3, segIndex: -1,
     note: '提前查天气！大雾/大雨金顶可能关闭。门票需公众号预约。'
   },
   { day: 5, date: '6月3日 周二', title: '梵净山 → 西江千户苗寨',
@@ -323,7 +321,7 @@ const ITINERARY = [
     sights: ['千户苗寨观景台全景日落', '风雨桥', '苗族歌舞表演'],
     food: ['长桌宴（酸汤鱼、腊肉、米酒）'],
     hotel: '西江千户苗寨·观景台客栈 或 西江998客栈 · ¥180-200/间',
-    stopFrom: 4, stopTo: 5, segIndex: 4,
+    stopFrom: 3, stopTo: 4, segIndex: 3,
     note: 'G320国道穿黔东苗寨星罗棋布。傍晚观景台看全景华灯初上！'
   },
   { day: 6, date: '6月4日 周三', title: '西江 → 荔波小七孔',
@@ -332,7 +330,7 @@ const ITINERARY = [
     sights: ['黔东南苗岭风光沿途', '荔波县城漳江夜景'],
     food: ['荔波酸肉', '盐酸扣肉', '樟江烤鱼', '荔波米粉'],
     hotel: '荔波小七孔景区附近客栈 或 7天酒店(荔波店) · ¥170-200/间',
-    stopFrom: 5, stopTo: 6, segIndex: 5,
+    stopFrom: 4, stopTo: 5, segIndex: 4,
     note: '一路向南深入贵州腹地。到荔波后休整，为明天养精蓄锐。'
   },
   { day: 7, date: '6月5日 周四', title: '荔波小七孔全天',
@@ -341,7 +339,7 @@ const ITINERARY = [
     sights: ['小七孔古桥', '拉雅瀑布', '水上森林', '卧龙潭', '鸳鸯湖', '大七孔天生桥'],
     food: ['樟江烤鱼', '荔波酸肉', '簸箕宴'],
     hotel: '荔波小七孔景区附近客栈 或 7天酒店(荔波店) 续住 · ¥170-200/间',
-    stopFrom: 6, stopTo: 6, segIndex: -1,
+    stopFrom: 5, stopTo: 5, segIndex: -1,
     note: '世界自然遗产！东门进西门出。卧龙潭蓝绿湖水是此行水景巅峰。'
   },
   { day: 8, date: '6月6日 周五', title: '荔波 → 贵阳',
@@ -350,7 +348,7 @@ const ITINERARY = [
     sights: ['贵阳甲秀楼夜景', '二七路小吃街'],
     food: ['丝娃娃（杨姨妈）', '肠旺面（金牌罗记）', '花溪牛肉粉', '雷家豆腐圆子'],
     hotel: '7天优品(贵阳花果园店) 或 如家精选(贵阳喷水池店) · ¥180-200/间',
-    stopFrom: 6, stopTo: 7, segIndex: 6,
+    stopFrom: 5, stopTo: 6, segIndex: 5,
     note: '北上返贵阳。傍晚到后逛甲秀楼+二七路小吃街。'
   },
   { day: 9, date: '6月7日 周六', title: '贵阳全天休整',
@@ -359,7 +357,7 @@ const ITINERARY = [
     sights: ['甲秀楼', '黔灵山公园（看猕猴）', '青岩古镇', '花溪公园'],
     food: ['丝娃娃', '肠旺面', '花溪牛肉粉', '青岩猪蹄'],
     hotel: '7天优品(贵阳花果园店) 或 如家精选(贵阳喷水池店) 续住 · ¥180-200/间',
-    stopFrom: 7, stopTo: 7, segIndex: -1,
+    stopFrom: 6, stopTo: 6, segIndex: -1,
     note: '休整一天！逛吃贵阳，青岩古镇距市区30分钟车程。'
   },
   { day: 10, date: '6月8日 周日', title: '贵阳 → 黄果树 → 安顺',
@@ -368,7 +366,7 @@ const ITINERARY = [
     sights: ['黄果树大瀑布+水帘洞', '陡坡塘瀑布', '天星桥'],
     food: ['安顺裹卷', '夺夺粉火锅', '油炸粑'],
     hotel: '黄果树开元颐居酒店 或 如家酒店(安顺火车站店) · ¥170-200/间',
-    stopFrom: 7, stopTo: 8, segIndex: 7,
+    stopFrom: 6, stopTo: 7, segIndex: 6,
     note: '游览：陡坡塘→天星桥→大瀑布（下午光线+水量最大）。6月水量最壮观！'
   },
   { day: 11, date: '6月9日 周一', title: '龙宫 + 云峰屯堡',
@@ -377,7 +375,7 @@ const ITINERARY = [
     sights: ['龙宫水溶洞（乘船游览）', '云峰屯堡（明代军屯石板房）'],
     food: ['屯堡鸡辣子', '腊肉血豆腐', '花江狗肉粉'],
     hotel: '如家酒店(安顺火车站店) 或 旧州客栈 · ¥160-190/间',
-    stopFrom: 8, stopTo: 10, segIndex: 9,
+    stopFrom: 7, stopTo: 9, segIndex: 8,
     note: '云峰屯堡拍明代服饰老人是宝藏题材！以安顺为基地轻松往返。'
   },
   { day: 12, date: '6月10日 周二', title: '安顺 → 织金洞 → 遵义',
@@ -386,7 +384,7 @@ const ITINERARY = [
     sights: ['织金洞（"溶洞之王"）', '捞沙巷美食街'],
     food: ['织金发粑', '荞凉粉', '遵义羊肉粉', '豆花面', '刘二妈米皮'],
     hotel: '7天酒店(遵义会址店) 或 遵义红城客栈 · ¥160-190/间',
-    stopFrom: 8, stopTo: 12, segIndex: 12,
+    stopFrom: 7, stopTo: 11, segIndex: 11,
     note: '织金洞2-3小时游览，雨天最佳备选。傍晚到遵义逛捞沙巷。'
   },
   { day: 13, date: '6月11日 周三', title: '遵义 → 茅台 → 恩施',
@@ -395,7 +393,7 @@ const ITINERARY = [
     sights: ['遵义会议会址（上午）', '茅台杨柳湾古街（中午）'],
     food: ['茅台镇酱香白酒品尝', '张关合渣', '土家酱香饼', '腊蹄子火锅'],
     hotel: '城市便捷酒店(恩施火车站店) 或 如家酒店(恩施土司城店) · ¥170-200/间',
-    stopFrom: 12, stopTo: 14, segIndex: 14,
+    stopFrom: 11, stopTo: 13, segIndex: 13,
     note: '上午遵义会址→中午茅台酒香→下午穿重庆东南部→傍晚到恩施。高速6h。'
   },
   { day: 14, date: '6月12日 周四', title: '恩施全天',
@@ -404,7 +402,7 @@ const ITINERARY = [
     sights: ['恩施土司城', '恩施女儿城', '恩施大峡谷（可选）'],
     food: ['张关合渣', '土家酱香饼', '腊蹄子火锅', '恩施豆皮', '油香儿'],
     hotel: '城市便捷酒店(恩施火车站店) 或 如家酒店(恩施土司城店) 续住 · ¥170-200/间',
-    stopFrom: 14, stopTo: 14, segIndex: -1,
+    stopFrom: 13, stopTo: 13, segIndex: -1,
     note: '休整一天！土司城九进堂拍照+女儿城逛吃，体力好可去大峡谷。'
   },
   { day: 15, date: '6月13日 周五', title: '恩施 → 宜昌',
@@ -413,7 +411,7 @@ const ITINERARY = [
     sights: ['四渡河大桥（途经）', '宜昌滨江公园', '三峡大坝（可选）'],
     food: ['恩施豆皮（早餐）', '宜昌凉虾', '萝卜饺子', '清江鱼火锅（晚餐）'],
     hotel: '城市便捷酒店(宜昌万达广场店) 或 7天酒店(宜昌东站店) · ¥160-190/间',
-    stopFrom: 15, stopTo: 16, segIndex: 16,
+    stopFrom: 13, stopTo: 14, segIndex: 14,
     note: '告别恩施，半天到宜昌。下午逛滨江公园，晚上清江鱼火锅！'
   },
   { day: 16, date: '6月14日 周六', title: '宜昌 → 武汉',
@@ -422,11 +420,10 @@ const ITINERARY = [
     sights: ['荆州古城（途经午餐）', '汉口江滩（到家）'],
     food: ['宜昌凉虾（带路上）', '荆州锅盔（午餐）'],
     hotel: '🏠 回到温暖的家',
-    stopFrom: 16, stopTo: 0, segIndex: 17,
+    stopFrom: 14, stopTo: 0, segIndex: 15,
     note: '最后半天轻松回家。宜昌出发，荆州午餐，下午到武汉。完美收官！'
   }
-];
-// ==================== GLOBAL STATE ====================
+];// ==================== GLOBAL STATE ====================
 let map, markers = [], polylines = [];
 let activeDay = 0;
 let routeMode = 'g';
