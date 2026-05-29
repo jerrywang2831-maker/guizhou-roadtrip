@@ -183,7 +183,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
     <div id="sidebar">
       <div id="sidebar-header">
         <h2>📋 行程总览</h2>
-        <p>武汉→常德→凤凰→梵净山→西江→荔波→贵阳→黄果树→遵义→重庆→恩施→宜昌→武汉</p>
+        <p>武汉→常德→凤凰→梵净山→西江→荔波→贵阳→黄果树→遵义→茅台→恩施→宜昌→武汉</p>
         <div class="route-mode-toggle">
           <span class="toggle-label active" id="lbl-guodao">🛣 国道优先</span>
           <label class="toggle-switch">
@@ -254,9 +254,8 @@ const STOPS = [
   { id: 11, name: '织金洞',   lat: 26.7400, lng: 105.8700, type: 'stop' },
   { id: 12, name: '遵义',     lat: 27.7212, lng: 106.9273, type: 'stop' },
   { id: 13, name: '茅台镇',   lat: 27.8530, lng: 106.3700, type: 'stop' },
-  { id: 14, name: '重庆',     lat: 29.5630, lng: 106.5516, type: 'highlight' },
-  { id: 15, name: '恩施',     lat: 30.2836, lng: 109.4867, type: 'stop' },
-  { id: 16, name: '宜昌',     lat: 30.6918, lng: 111.2864, type: 'stop' },
+  { id: 14, name: '恩施',     lat: 30.2836, lng: 109.4867, type: 'stop' },
+  { id: 15, name: '宜昌',     lat: 30.6918, lng: 111.2864, type: 'stop' },
 ];
 
 // ==================== DATA: Route Segments (consecutive stop pairs) ====================
@@ -275,10 +274,9 @@ const SEGMENTS = [
   { from: 8, to: 11 },  // 安顺→织金洞
   { from: 11, to: 12 }, // 织金洞→遵义
   { from: 12, to: 13 }, // 遵义→茅台
-  { from: 13, to: 14 }, // 茅台→重庆
-  { from: 14, to: 15 }, // 重庆→恩施
-  { from: 15, to: 16 }, // 恩施→宜昌
-  { from: 16, to: 0 },  // 宜昌→武汉
+  { from: 13, to: 14 }, // 茅台→恩施
+  { from: 14, to: 15 }, // 恩施→宜昌
+  { from: 15, to: 0 },  // 宜昌→武汉
 ];
 
 // ==================== DATA: Day-by-Day Itinerary ====================
@@ -392,23 +390,23 @@ const ITINERARY = [
     stopFrom: 8, stopTo: 12, segIndex: 12,
     note: '织金洞2-3小时游览，雨天最佳备选。傍晚到遵义逛捞沙巷。'
   },
-  { day: 13, date: '6月11日 周三', title: '遵义 → 茅台 → 重庆',
-    route_g: { path: 'G326→G212国道', dist: '380km', time: '7-8h' },
-    route_s: { path: 'G4215蓉遵→G75兰海→重庆绕城', dist: '350km', time: '4h' },
-    sights: ['遵义会议会址（上午）', '茅台杨柳湾古街（中午）', '重庆洪崖洞夜景', '解放碑'],
-    food: ['茅台镇酱香白酒品尝', '重庆火锅（晚餐必吃！）', '重庆小面'],
-    hotel: '7天酒店(重庆解放碑店) 或 如家酒店(重庆洪崖洞店) · ¥180-200/间',
-    stopFrom: 12, stopTo: 14, segIndex: 14,
-    note: '上午遵义会址→中午茅台酒香→下午到重庆，洪崖洞夜景+火锅，完美！'
-  },
-  { day: 14, date: '6月12日 周四', title: '重庆 → 恩施',
-    route_g: { path: 'G319→G209国道', dist: '350km', time: '6h' },
-    route_s: { path: 'G50沪渝高速', dist: '330km', time: '4h' },
-    sights: ['恩施土司城', '恩施女儿城'],
-    food: ['重庆小面（早餐）', '张关合渣', '土家酱香饼', '腊蹄子火锅'],
+  { day: 13, date: '6月11日 周三', title: '遵义 → 茅台 → 恩施',
+    route_g: { path: 'G326→茅台→G326→G209国道', dist: '550km', time: '10h' },
+    route_s: { path: 'G56杭瑞→G50沪渝高速', dist: '500km', time: '6h' },
+    sights: ['遵义会议会址（上午）', '茅台杨柳湾古街（中午）'],
+    food: ['茅台镇酱香白酒品尝', '张关合渣', '土家酱香饼', '腊蹄子火锅'],
     hotel: '城市便捷酒店(恩施火车站店) 或 如家酒店(恩施土司城店) · ¥170-200/间',
-    stopFrom: 14, stopTo: 15, segIndex: 15,
-    note: '告别重庆，半天到恩施。下午逛土司城+女儿城，晚上吃张关合渣。'
+    stopFrom: 12, stopTo: 14, segIndex: 14,
+    note: '上午遵义会址→中午茅台酒香→下午穿重庆东南部→傍晚到恩施。高速6h。'
+  },
+  { day: 14, date: '6月12日 周四', title: '恩施全天',
+    route_g: { path: '恩施市内游览', dist: '—', time: '—' },
+    route_s: { path: '恩施市内游览', dist: '—', time: '—' },
+    sights: ['恩施土司城', '恩施女儿城', '恩施大峡谷（可选）'],
+    food: ['张关合渣', '土家酱香饼', '腊蹄子火锅', '恩施豆皮', '油香儿'],
+    hotel: '城市便捷酒店(恩施火车站店) 或 如家酒店(恩施土司城店) 续住 · ¥170-200/间',
+    stopFrom: 14, stopTo: 14, segIndex: -1,
+    note: '休整一天！土司城九进堂拍照+女儿城逛吃，体力好可去大峡谷。'
   },
   { day: 15, date: '6月13日 周五', title: '恩施 → 宜昌',
     route_g: { path: 'G318国道(恩施峡谷段)', dist: '250km', time: '5h' },
