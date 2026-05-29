@@ -1,7 +1,7 @@
 import type { ItineraryDay } from '../types';
 
 export const ITINERARY: ItineraryDay[] = [
-  { day: 1, date: '5月30日 周五', title: '武汉 → 常德',
+  { day: 1, date: '5月31日 周六', title: '武汉 → 常德',
     route_g: { path: 'G318→G207→G319国道', dist: '430km', time: '8-9h' },
     route_s: { path: 'G50沪渝→G55二广高速', dist: '400km', time: '4.5h' },
     sights: ['常德柳叶湖', '常德诗墙（沅江边吉尼斯纪录）'],
@@ -10,7 +10,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 0, stopTo: 1, segIndex: 0,
     note: 'G318→G207→G319国道，穿江汉平原进湖南。傍晚到常德逛柳叶湖。'
   },
-  { day: 2, date: '5月31日 周六', title: '常德 → 凤凰古城',
+  { day: 2, date: '6月1日 周日', title: '常德 → 凤凰古城',
     route_g: { path: 'G319→吉首→G209国道', dist: '280km', time: '5-6h' },
     route_s: { path: 'G56杭瑞高速', dist: '270km', time: '3.5h' },
     sights: ['常德桃花源（上午，可选）', '武陵山区沿途风光', '沱江黄昏+吊脚楼夜景'],
@@ -19,7 +19,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 1, stopTo: 2, segIndex: 1,
     note: 'G319→G209国道穿武陵山，沿途即是风景。下午到凤凰拍黄昏+夜景。'
   },
-  { day: 3, date: '6月1日 周日', title: '凤凰 → 梵净山',
+  { day: 3, date: '6月2日 周一', title: '凤凰 → 梵净山',
     route_g: { path: 'G354国道→江口县', dist: '150km', time: '3h' },
     route_s: { path: 'G56杭瑞→S30江黔高速', dist: '130km', time: '2h' },
     sights: ['沱江晨雾（6:00-7:30 必拍！）', '虹桥', '跳岩', '沈从文故居'],
@@ -28,7 +28,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 2, stopTo: 3, segIndex: 2,
     note: 'G354国道直达。早起拍沱江晨雾，上午逛古城，中午出发。'
   },
-  { day: 4, date: '6月2日 周一', title: '梵净山全天',
+  { day: 4, date: '6月3日 周二', title: '梵净山全天',
     route_g: { path: '索道上山 · 全天游览', dist: '—', time: '—' },
     route_s: { path: '索道上山 · 全天游览', dist: '—', time: '—' },
     sights: ['红云金顶', '蘑菇石', '承恩寺', '万米睡佛'],
@@ -37,7 +37,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 3, stopTo: 3, segIndex: -1,
     note: '提前查天气！大雾/大雨金顶可能关闭。门票需公众号预约。'
   },
-  { day: 5, date: '6月3日 周二', title: '梵净山 → 西江千户苗寨',
+  { day: 5, date: '6月4日 周三', title: '梵净山 → 西江千户苗寨',
     route_g: { path: 'G354→G320国道→凯里→西江', dist: '270km', time: '5.5h' },
     route_s: { path: 'G56杭瑞→S62→G60沪昆高速', dist: '250km', time: '3.5h' },
     sights: ['千户苗寨观景台全景日落', '风雨桥', '苗族歌舞表演'],
@@ -46,7 +46,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 3, stopTo: 4, segIndex: 3,
     note: 'G354→G320国道横穿黔东，苗寨星罗棋布。傍晚观景台看全景华灯初上！'
   },
-  { day: 6, date: '6月4日 周三', title: '西江 → 荔波小七孔',
+  { day: 6, date: '6月5日 周四', title: '西江 → 荔波小七孔',
     route_g: { path: 'G320→G321→G243国道', dist: '300km', time: '5.5h' },
     route_s: { path: 'G60沪昆→G75兰海→S88麻驾高速', dist: '280km', time: '3.5h' },
     sights: ['黔东南苗岭风光沿途', '荔波县城漳江夜景'],
@@ -55,7 +55,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 4, stopTo: 5, segIndex: 4,
     note: 'G320→G321→G243国道一路向南深入贵州。到荔波休整。'
   },
-  { day: 7, date: '6月5日 周四', title: '荔波小七孔全天',
+  { day: 7, date: '6月6日 周五', title: '荔波小七孔全天',
     route_g: { path: '小七孔+大七孔 · 全天游览', dist: '—', time: '—' },
     route_s: { path: '小七孔+大七孔 · 全天游览', dist: '—', time: '—' },
     sights: ['小七孔古桥', '拉雅瀑布', '水上森林', '卧龙潭', '鸳鸯湖', '大七孔天生桥'],
@@ -64,7 +64,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 5, stopTo: 5, segIndex: -1,
     note: '世界自然遗产！东门进西门出。卧龙潭蓝绿湖水是此行水景巅峰。'
   },
-  { day: 8, date: '6月6日 周五', title: '荔波 → 贵阳',
+  { day: 8, date: '6月7日 周六', title: '荔波 → 贵阳',
     route_g: { path: 'G243→G210国道', dist: '250km', time: '4.5-5h' },
     route_s: { path: 'S88麻驾→G75兰海高速', dist: '240km', time: '3h' },
     sights: ['贵阳甲秀楼夜景', '二七路小吃街'],
@@ -73,7 +73,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 5, stopTo: 6, segIndex: 5,
     note: 'G243→G210国道北上返贵阳。傍晚逛甲秀楼+二七路小吃街。'
   },
-  { day: 9, date: '6月7日 周六', title: '贵阳全天休整',
+  { day: 9, date: '6月8日 周日', title: '贵阳全天休整',
     route_g: { path: '贵阳市内游览', dist: '—', time: '—' },
     route_s: { path: '贵阳市内游览', dist: '—', time: '—' },
     sights: ['甲秀楼', '黔灵山公园（看猕猴）', '青岩古镇', '花溪公园'],
@@ -82,7 +82,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 6, stopTo: 6, segIndex: -1,
     note: '休整一天！逛吃贵阳，青岩古镇距市区30分钟车程。'
   },
-  { day: 10, date: '6月8日 周日', title: '贵阳 → 黄果树 → 安顺',
+  { day: 10, date: '6月9日 周一', title: '贵阳 → 黄果树 → 安顺',
     route_g: { path: 'G320贵黄公路(国道)', dist: '140km', time: '3h' },
     route_s: { path: 'G60沪昆高速', dist: '130km', time: '1.5h' },
     sights: ['黄果树大瀑布+水帘洞', '陡坡塘瀑布', '天星桥'],
@@ -91,7 +91,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 6, stopTo: 7, segIndex: 6,
     note: 'G320贵黄公路直达。游览：陡坡塘→天星桥→大瀑布。6月水量最壮观！'
   },
-  { day: 11, date: '6月9日 周一', title: '龙宫 + 云峰屯堡',
+  { day: 11, date: '6月10日 周二', title: '龙宫 + 云峰屯堡',
     route_g: { path: 'G320→S209省道', dist: '55km', time: '1.5h' },
     route_s: { path: 'G60沪昆→S209省道', dist: '55km', time: '1.5h' },
     sights: ['龙宫水溶洞（乘船游览）', '云峰屯堡（明代军屯石板房）'],
@@ -100,7 +100,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 7, stopTo: 9, segIndex: 8,
     note: 'G320接S209省道。云峰屯堡拍明代服饰老人是宝藏题材！以安顺为基地往返。'
   },
-  { day: 12, date: '6月10日 周二', title: '安顺 → 织金洞 → 遵义',
+  { day: 12, date: '6月11日 周三', title: '安顺 → 织金洞 → 遵义',
     route_g: { path: 'G320→G321→G326国道', dist: '300km', time: '6h' },
     route_s: { path: 'G60沪昆→G75兰海高速', dist: '280km', time: '3.5h' },
     sights: ['织金洞（"溶洞之王"）', '捞沙巷美食街'],
@@ -109,7 +109,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 7, stopTo: 11, segIndex: 11,
     note: 'G320→G321→G326国道。织金洞2-3小时游览，傍晚到遵义逛捞沙巷。'
   },
-  { day: 13, date: '6月11日 周三', title: '遵义 → 茅台 → 恩施',
+  { day: 13, date: '6月12日 周四', title: '遵义 → 茅台 → 恩施',
     route_g: { path: 'G326国道→茅台→G326→G209国道', dist: '550km', time: '10h' },
     route_s: { path: 'G56杭瑞→G50沪渝高速', dist: '500km', time: '6h' },
     sights: ['遵义会议会址（上午）', '茅台杨柳湾古街（中午）'],
@@ -118,7 +118,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 11, stopTo: 13, segIndex: 13,
     note: 'G326→G209国道。上午会址→中午茅台酒香→下午穿重庆东南→傍晚到恩施。'
   },
-  { day: 14, date: '6月12日 周四', title: '恩施全天',
+  { day: 14, date: '6月13日 周五', title: '恩施全天',
     route_g: { path: '恩施市内游览', dist: '—', time: '—' },
     route_s: { path: '恩施市内游览', dist: '—', time: '—' },
     sights: ['恩施土司城', '恩施女儿城', '恩施大峡谷（可选）'],
@@ -127,7 +127,7 @@ export const ITINERARY: ItineraryDay[] = [
     stopFrom: 13, stopTo: 13, segIndex: -1,
     note: '休整一天！土司城九进堂拍照+女儿城逛吃，体力好可去大峡谷。'
   },
-  { day: 15, date: '6月13日 周五', title: '恩施 → 武汉',
+  { day: 15, date: '6月14日 周六', title: '恩施 → 武汉',
     route_g: { path: 'G318国道(恩施→宜昌峡谷段)→G50高速(宜昌→武汉)', dist: '530km', time: '7-8h' },
     route_s: { path: 'G50沪渝高速全程', dist: '530km', time: '6h' },
     sights: ['四渡河大桥（途经，世界第二高桥）', '宜昌滨江公园（午餐休整）'],
