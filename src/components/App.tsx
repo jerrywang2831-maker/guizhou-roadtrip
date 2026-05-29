@@ -1,0 +1,56 @@
+import { useState, useCallback } from 'react';
+import { ITINERARY } from '../data/itinerary';
+import { useWeather } from '../hooks/useWeather';
+import { useKeyboardNav } from '../hooks/useKeyboardNav';
+import { Header } from './Header';
+import { Sidebar } from './Sidebar';
+import { MapContainer } from './MapContainer';
+import styles from './App.module.css';
+
+export default function App() {
+  const [activeDay, setActiveDay] = useState(0);
+  const [routeMode, setRouteMode] = useState<'g' | 's'>('g');
+  const weatherCache = useWeather();
+
+  const selectDay = useCallback((dayIndex: number) => {
+    setActiveDay(dayIndex);
+  }, []);
+
+  const prevDay = useCallback(() => {
+    setActiveDay(prev => (prev - 1 + ITINERARY.length) % ITINERARY.length);
+  }, []);
+
+  const nextDay = useCallback(() => {
+    setActiveDay(prev => (prev + 1) % ITINERARY.length);
+  }, []);
+
+  const toggleRouteMode = useCallback(() => {
+    setRouteMode(prev => prev === 'g' ? 's' : 'g');
+  }, []);
+
+  useKeyboardNav(prevDay, nextDay);
+
+  return (
+    <div className={styles.app}>
+      <Header />
+      <div className={styles.main}>
+        <Sidebar
+          activeDay={activeDay}
+          routeMode={routeMode}
+          weatherCache={weatherCache}
+          onSelectDay={selectDay}
+          onPrevDay={prevDay}
+          onNextDay={nextDay}
+          onToggleRoute={toggleRouteMode}
+        />
+        <MapContainer
+          activeDay={activeDay}
+          routeMode={routeMode}
+          onSelectDay={selectDay}
+          onPrevDay={prevDay}
+          onNextDay={nextDay}
+        />
+      </div>
+    </div>
+  );
+}

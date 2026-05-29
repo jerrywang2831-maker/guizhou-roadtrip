@@ -1,0 +1,17 @@
+.app {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .main {
+    flex-direction: column;
+  }
+}

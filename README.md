@@ -17,42 +17,26 @@
 
 ### 1. 获取高德地图 API Key
 
-访问 [高德开放平台](https://console.amap.com/dev/key/app) 免费申请一个 **JS API** 的 Key：
-
-1. 注册/登录高德开放平台
-2. 创建应用 → 添加 Key
-3. 服务平台选择「Web端(JS API)」
-4. 复制生成的 Key
+访问 [高德开放平台](https://console.amap.com/dev/key/app) 免费申请一个 **JS API** 的 Key。
 
 ### 2. 配置 Key
 
-打开 `index.html`，将第 232 行左右的 `YOUR_AMAP_KEY_HERE` 替换为你的 Key：
+打开 `src/hooks/useAmap.ts`，替换 `AMAP_KEY` 和 `securityJsCode`。
 
-```javascript
-const AMAP_KEY = 'YOUR_AMAP_KEY_HERE';  // ← 改成你的 Key
+### 3. 开发
+
+```bash
+npm install
+npm run dev        # 启动开发服务器，默认 http://localhost:5173
+npm run build      # 生产构建，输出到 dist/
+npm run preview    # 预览生产构建
 ```
-
-### 3. 打开
-
-用浏览器打开 `index.html` 即可使用。
 
 ## 🌐 发布到 GitHub Pages
 
 ```bash
-# 1. 创建 GitHub 仓库
-#    在 GitHub 上新建仓库，例如 guizhou-roadtrip
-
-# 2. 推送代码
-git init
-git add index.html README.md
-git commit -m "Add interactive Guizhou roadtrip map"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/guizhou-roadtrip.git
-git push -u origin main
-
-# 3. 启用 GitHub Pages
-#    仓库 Settings → Pages → Source: main branch → Save
-#    稍后访问 https://YOUR_USERNAME.github.io/guizhou-roadtrip/
+npm run build
+# 将 dist/ 目录部署到 GitHub Pages
 ```
 
 ## 📋 行程总览
@@ -79,14 +63,16 @@ git push -u origin main
 
 ## 🛠 技术栈
 
+- React 19 + TypeScript
+- Vite
 - 高德地图 JS API v2.0
-- 纯 HTML/CSS/JS（零依赖、零构建）
-- GitHub Pages 托管
+- Open-Meteo 天气 API
+- CSS Modules
 
 ## 📝 自定义
 
-如需修改行程，编辑 `index.html` 中的以下数据：
+如需修改行程，编辑 `src/data/` 中的以下文件：
 
-- `STOPS`：途经地点及其坐标
-- `SEGMENTS`：相邻地点之间的行车段
-- `ITINERARY`：每天的详细行程（景点、美食、住宿、提示）
+- `stops.ts`：途经地点及其坐标
+- `segments.ts`：相邻地点之间的行车段
+- `itinerary.ts`：每天的详细行程（景点、美食、住宿、提示）
