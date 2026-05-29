@@ -66,7 +66,8 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
   letter-spacing: 0.5px;
 }
 .day-card.active .day-num { background: #ff6b6b; }
-.day-card .day-date { font-size: 10px; color: #5a7a8a; }
+.day-card .day-date { font-size: 10px; color: #5a7a8a; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.day-weather { font-size: 10px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 8px; color: #8ab4d6; white-space: nowrap; }
 .day-card .day-title { font-size: 14px; font-weight: 600; margin: 8px 0 4px; color: #e8e8e8; }
 .day-card .day-route { font-size: 12px; color: #7a8a99; line-height: 1.4; }
 .day-card .day-meta { display: flex; gap: 14px; margin-top: 6px; font-size: 11px; color: #5a7a8a; }
@@ -182,7 +183,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Sego
     <div id="sidebar">
       <div id="sidebar-header">
         <h2>📋 行程总览</h2>
-        <p>武汉→常德→凤凰→梵净山→西江→荔波→贵阳→黄果树→赤水→恩施→宜昌→武汉</p>
+        <p>武汉→常德→凤凰→梵净山→西江→荔波→贵阳→黄果树→遵义→重庆→恩施→宜昌→武汉</p>
         <div class="route-mode-toggle">
           <span class="toggle-label active" id="lbl-guodao">🛣 国道优先</span>
           <label class="toggle-switch">
@@ -253,7 +254,7 @@ const STOPS = [
   { id: 11, name: '织金洞',   lat: 26.7400, lng: 105.8700, type: 'stop' },
   { id: 12, name: '遵义',     lat: 27.7212, lng: 106.9273, type: 'stop' },
   { id: 13, name: '茅台镇',   lat: 27.8530, lng: 106.3700, type: 'stop' },
-  { id: 14, name: '赤水',     lat: 28.5800, lng: 105.7000, type: 'highlight' },
+  { id: 14, name: '重庆',     lat: 29.5630, lng: 106.5516, type: 'highlight' },
   { id: 15, name: '恩施',     lat: 30.2836, lng: 109.4867, type: 'stop' },
   { id: 16, name: '宜昌',     lat: 30.6918, lng: 111.2864, type: 'stop' },
 ];
@@ -274,22 +275,23 @@ const SEGMENTS = [
   { from: 8, to: 11 },  // 安顺→织金洞
   { from: 11, to: 12 }, // 织金洞→遵义
   { from: 12, to: 13 }, // 遵义→茅台
-  { from: 13, to: 14 }, // 茅台→赤水
-  { from: 14, to: 15 }, // 赤水→恩施
+  { from: 13, to: 14 }, // 茅台→重庆
+  { from: 14, to: 15 }, // 重庆→恩施
   { from: 15, to: 16 }, // 恩施→宜昌
   { from: 16, to: 0 },  // 宜昌→武汉
 ];
 
 // ==================== DATA: Day-by-Day Itinerary ====================
 const ITINERARY = [
-  { day: 1, date: '5月30日 周五', title: '武汉 → 常德',
-    route_g: { path: 'G318→G207经荆州→G319', dist: '430km', time: '8-9h' },
-    route_s: { path: 'G50沪渝→G55二广', dist: '400km', time: '4.5h' },
-    sights: ['荆州古城墙（途经午餐）', '常德柳叶湖', '常德诗墙'],
-    food: ['荆州鱼糕、锅盔（午餐）', '常德牛肉粉（杨永胜）', '酱板鸭', '擂茶'],
+  { day: 1, date: '5月30日 周五', title: '武汉 → 荆州 → 常德',
+    route_g: { path: 'G318→荆州(220km)→G207→常德(210km)', dist: '430km', time: '8-9h' },
+    route_s: { path: 'G50沪渝→荆州(210km)→G55二广→常德(200km)', dist: '400km', time: '4.5h' },
+    sights: ['荆州古城墙（东门段免费）', '荆州博物馆', '常德柳叶湖', '常德诗墙'],
+    food: ['荆州鱼糕', '公安牛肉火锅', '荆州锅盔（午餐）', '常德牛肉粉', '酱板鸭', '擂茶'],
     hotel: '城市便捷酒店(常德柳叶湖店) 或 7天酒店(常德武陵大道店) · ¥150-170/间',
     stopFrom: 0, stopTo: 2, segIndex: 1,
-    note: '第一天赶路为主，经荆州午餐歇脚，傍晚到常德。国道较长建议走高速。'
+    note: '上午到荆州（2.5h），逛古城+博物馆+午餐（3h），下午2h到常德。荆州值得停留！'
+  },
   },
   { day: 2, date: '5月31日 周六', title: '常德 → 凤凰古城',
     route_g: { path: 'G319→吉首→G209国道', dist: '280km', time: '5-6h' },
@@ -390,23 +392,23 @@ const ITINERARY = [
     stopFrom: 8, stopTo: 12, segIndex: 12,
     note: '织金洞2-3小时游览，雨天最佳备选。傍晚到遵义逛捞沙巷。'
   },
-  { day: 13, date: '6月11日 周三', title: '遵义 → 茅台 → 赤水',
-    route_g: { path: 'G326→G212国道(赤水河谷)', dist: '220km', time: '5h' },
-    route_s: { path: 'G4215蓉遵高速', dist: '200km', time: '2.5h' },
-    sights: ['遵义会议会址', '茅台杨柳湾古街', '赤水佛光岩（下午金红光线）'],
-    food: ['茅台镇酱香白酒品尝', '赤水豆花', '筒筒笋炖腊猪脚', '赤水河鲜鱼'],
-    hotel: '如家酒店(赤水河滨路店) 或 赤水丹霞客栈 · ¥160-190/间',
+  { day: 13, date: '6月11日 周三', title: '遵义 → 茅台 → 重庆',
+    route_g: { path: 'G326→G212国道', dist: '380km', time: '7-8h' },
+    route_s: { path: 'G4215蓉遵→G75兰海→重庆绕城', dist: '350km', time: '4h' },
+    sights: ['遵义会议会址（上午）', '茅台杨柳湾古街（中午）', '重庆洪崖洞夜景', '解放碑'],
+    food: ['茅台镇酱香白酒品尝', '重庆火锅（晚餐必吃！）', '重庆小面'],
+    hotel: '7天酒店(重庆解放碑店) 或 如家酒店(重庆洪崖洞店) · ¥180-200/间',
     stopFrom: 12, stopTo: 14, segIndex: 14,
-    note: '上午遵义会址→中午茅台酒香→下午到赤水看佛光岩（日落的金红岩壁！）'
+    note: '上午遵义会址→中午茅台酒香→下午到重庆，洪崖洞夜景+火锅，完美！'
   },
-  { day: 14, date: '6月12日 周四', title: '赤水 → 恩施',
-    route_g: { path: 'G546→G318→G209国道', dist: '520km', time: '10h' },
-    route_s: { path: 'G4215→重庆绕城→G50沪渝', dist: '500km', time: '5.5h' },
+  { day: 14, date: '6月12日 周四', title: '重庆 → 恩施',
+    route_g: { path: 'G319→G209国道', dist: '350km', time: '6h' },
+    route_s: { path: 'G50沪渝高速', dist: '330km', time: '4h' },
     sights: ['恩施土司城', '恩施女儿城'],
-    food: ['张关合渣', '土家酱香饼', '腊蹄子火锅'],
+    food: ['重庆小面（早餐）', '张关合渣', '土家酱香饼', '腊蹄子火锅'],
     hotel: '城市便捷酒店(恩施火车站店) 或 如家酒店(恩施土司城店) · ¥170-200/间',
     stopFrom: 14, stopTo: 15, segIndex: 15,
-    note: '国道过长不推荐，建议走高速。到恩施后逛土司城+女儿城。'
+    note: '告别重庆，半天到恩施。下午逛土司城+女儿城，晚上吃张关合渣。'
   },
   { day: 15, date: '6月13日 周五', title: '恩施 → 宜昌',
     route_g: { path: 'G318国道(恩施峡谷段)', dist: '250km', time: '5h' },
@@ -426,14 +428,17 @@ const ITINERARY = [
     stopFrom: 16, stopTo: 0, segIndex: 17,
     note: '最后半天轻松回家。宜昌出发，荆州午餐，下午到武汉。完美收官！'
   }
-];D
+];
 // ==================== GLOBAL STATE ====================
 let map, markers = [], polylines = [];
 let activeDay = 0;
-let routeMode = 'g'; // 'g' = 国道优先, 's' = 高速优先
-let routeLinesG = []; // 国道路线 polylines
-let routeLinesS = []; // 高速路线 polylines
-let allRoutePaths = []; // store all driving paths for re-drawing
+let routeMode = 'g';
+let routeLinesG = [], routeLinesS = [], allRoutePaths = [];
+let weatherCache = {}; // { stopId: [{ date, max, min, code, precip }] }
+
+// Weather code → icon
+const W_ICONS = { 0:'☀️',1:'☀️',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌦',61:'🌧',63:'🌧',65:'🌧',80:'🌦',81:'🌦',82:'🌦',95:'⛈',96:'⛈',99:'⛈' };
+const W_TEXT = { 0:'晴',1:'晴',2:'多云',3:'阴',45:'雾',48:'雾',51:'小雨',53:'小雨',55:'小雨',61:'中雨',63:'中雨',65:'大雨',80:'阵雨',81:'阵雨',82:'暴雨',95:'雷暴',96:'雷暴',99:'雷暴' };
 
 // ==================== INIT ====================
 function init() {
@@ -452,6 +457,7 @@ function init() {
   }
 
   renderSidebar();
+  fetchWeather();
   initMap();
 }
 
@@ -462,11 +468,13 @@ function renderSidebar() {
   list.innerHTML = ITINERARY.map((d, i) => {
     const r = routeMode === 'g' ? d.route_g : d.route_s;
     const routeStr = r.dist === '—' ? r.path : `${r.path} · ${r.dist} · ${r.time}`;
+    const w = getWeatherForDay(d);
+    const wHtml = w ? `<span class="day-weather" title="${W_TEXT[w.code]} ${w.min}~${w.max}°C 降水${w.precip}%">${W_ICONS[w.code]||'🌤'} ${w.min}°~${w.max}°</span>` : '';
     return `
     <div class="day-card${i === activeDay ? ' active' : ''}" id="day-card-${i}" onclick="selectDay(${i})">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <span class="day-num">Day ${d.day}</span>
-        <span class="day-date">${d.date}</span>
+        <span class="day-date">${d.date} ${wHtml}</span>
       </div>
       <div class="day-title">${d.title}</div>
       <div class="day-route">${icon} ${routeStr}</div>
@@ -783,6 +791,46 @@ function updateDayLabel() {
   const r = routeMode === 'g' ? d.route_g : d.route_s;
   const routeStr = r.dist === '—' ? r.path : `${r.path} · ${r.dist} · ${r.time}`;
   document.getElementById('current-day-label').textContent = `Day ${d.day}`;
+}
+
+// ==================== WEATHER ====================
+async function fetchWeather() {
+  // Get unique overnight stops from ITINERARY
+  const stopsToFetch = [];
+  const seen = new Set();
+  ITINERARY.forEach(d => {
+    if (d.stopTo >= 0 && !seen.has(d.stopTo) && d.stopTo !== d.stopFrom) {
+      seen.add(d.stopTo);
+      stopsToFetch.push(d.stopTo);
+    }
+  });
+
+  // Fetch 16-day forecast for each unique stop
+  const baseDate = new Date(2026, 4, 30); // May 30, 2026
+  for (const stopId of stopsToFetch) {
+    const stop = STOPS[stopId];
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${stop.lat}&longitude=${stop.lng}&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max&timezone=Asia/Shanghai&forecast_days=16`;
+    try {
+      const resp = await fetch(url);
+      const data = await resp.json();
+      weatherCache[stopId] = data.daily.time.map((t, i) => ({
+        date: t,
+        max: Math.round(data.daily.temperature_2m_max[i]),
+        min: Math.round(data.daily.temperature_2m_min[i]),
+        code: data.daily.weather_code[i],
+        precip: data.daily.precipitation_probability_max[i],
+      }));
+    } catch(e) { console.warn('Weather fetch failed for', stop.name, e); }
+  }
+  renderSidebar(); // re-render with weather
+}
+
+function getWeatherForDay(dayObj) {
+  const stopId = dayObj.stopTo >= 0 ? dayObj.stopTo : (dayObj.stopFrom >= 0 ? dayObj.stopFrom : -1);
+  if (stopId < 0 || !weatherCache[stopId]) return null;
+  const dayIdx = dayObj.day - 1; // Day 1 = index 0
+  if (dayIdx >= weatherCache[stopId].length) return null;
+  return weatherCache[stopId][dayIdx];
 }
 
 // ==================== START ====================
