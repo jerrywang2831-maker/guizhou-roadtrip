@@ -32,12 +32,12 @@ export function Sidebar({
         <h2>📋 行程总览</h2>
         <p>武汉→常德→凤凰→梵净山→西江→荔波→贵阳→黄果树→遵义→茅台→恩施→武汉</p>
         <div className={styles.routeModeToggle}>
-          <span className={`${styles.toggleLabel} ${routeMode === 'g' ? styles.active : ''}`}>🛣 国道优先</span>
+          <span className={`${styles.toggleLabel} ${routeMode === 'g' ? styles.toggleLabelActive : ''}`}>🛣 国道优先</span>
           <label className={styles.toggleSwitch}>
             <input type="checkbox" checked={routeMode === 's'} onChange={onToggleRoute} />
             <span className={styles.toggleSlider} />
           </label>
-          <span className={`${styles.toggleLabel} ${routeMode === 's' ? styles.active : ''}`}>🚀 高速优先</span>
+          <span className={`${styles.toggleLabel} ${routeMode === 's' ? styles.toggleLabelActive : ''}`}>🚀 高速优先</span>
         </div>
       </div>
       <div className={styles.dayNav}>

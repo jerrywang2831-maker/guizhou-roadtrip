@@ -2,18 +2,40 @@ import { useState, useCallback } from 'react';
 import { usePhotos } from '../hooks/usePhotos';
 import styles from './PhotoGallery.module.css';
 
+const GRADIENTS = [
+  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+  'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+  'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+  'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+  'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)',
+  'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
+  'linear-gradient(135deg, #f5576c 0%, #ff6f00 100%)',
+  'linear-gradient(135deg, #667eea 0%, #2af598 100%)',
+];
+
+function FallbackThumb({ label, index }: { label: string; index: number }) {
+  return (
+    <div className={styles.fallback} style={{ background: GRADIENTS[index % GRADIENTS.length] }}>
+      {label.slice(0, 8)}
+    </div>
+  );
+}
+
 interface PhotoGalleryProps {
-  /** Search query — typically the main attraction name */
   query: string;
-  /** Only fetch when the day card is expanded */
   enabled: boolean;
 }
 
 export function PhotoGallery({ query, enabled }: PhotoGalleryProps) {
-  const { photos, loading, error, retry } = usePhotos(query, enabled);
+  const { photos, loading } = usePhotos(query, enabled);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [failed, setFailed] = useState<Set<number>>(new Set());
 
-  const openLightbox = useCallback((idx: number) => setLightboxIndex(idx), []);
+  const openLightbox = useCallback((idx: number) => {
+    if (!failed.has(idx)) setLightboxIndex(idx);
+  }, [failed]);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
   const prevImage = useCallback(
     () => setLightboxIndex((i) => (i !== null ? (i - 1 + photos.length) % photos.length : null)),
@@ -24,23 +46,16 @@ export function PhotoGallery({ query, enabled }: PhotoGalleryProps) {
     [photos.length]
   );
 
+  const handleImgError = useCallback((idx: number) => {
+    setFailed((prev) => new Set(prev).add(idx));
+  }, []);
+
   if (loading) {
     return (
       <div className={styles.gallery}>
         <div className={styles.loading}>
           <span className={styles.loadingSpinner} />
-          正在加载 {query} 的照片...
-        </div>
-      </div>
-    );
-  }
-
-  if (error && photos.length === 0) {
-    return (
-      <div className={styles.gallery}>
-        <div className={styles.error}>
-          📷 {error}
-          <button onClick={retry}>重试</button>
+          正在加载照片...
         </div>
       </div>
     );
@@ -48,30 +63,36 @@ export function PhotoGallery({ query, enabled }: PhotoGalleryProps) {
 
   if (photos.length === 0) return null;
 
+  const loadedPhotos = photos.filter((_, i) => !failed.has(i));
+
   return (
     <div className={styles.gallery}>
       <div className={styles.galleryHeader}>
         <span className={styles.galleryTitle}>📷 {query}</span>
-        <span className={styles.galleryCount}>{photos.length}张</span>
+        <span className={styles.galleryCount}>10张</span>
       </div>
       <div className={styles.scroll}>
-        {photos.map((p, i) => (
-          <img
-            key={p.id}
-            src={p.thumb}
-            alt={p.alt}
-            className={styles.thumb}
-            loading="lazy"
-            onClick={() => openLightbox(i)}
-          />
-        ))}
+        {photos.map((p, i) =>
+          failed.has(i) ? (
+            <FallbackThumb key={p.id} label={query} index={i} />
+          ) : (
+            <img
+              key={p.id}
+              src={p.thumb}
+              alt={p.alt}
+              className={styles.thumb}
+              loading="lazy"
+              onClick={() => openLightbox(i)}
+              onError={() => handleImgError(i)}
+            />
+          )
+        )}
       </div>
 
-      {/* Lightbox */}
-      {lightboxIndex !== null && (
+      {lightboxIndex !== null && !failed.has(lightboxIndex) && (
         <div className={styles.lightbox} onClick={closeLightbox}>
           <button className={styles.lightboxClose} onClick={closeLightbox}>×</button>
-          {photos.length > 1 && (
+          {loadedPhotos.length > 1 && (
             <>
               <button className={`${styles.lightboxNav} ${styles.lightboxPrev}`} onClick={(e) => { e.stopPropagation(); prevImage(); }}>◀</button>
               <button className={`${styles.lightboxNav} ${styles.lightboxNext}`} onClick={(e) => { e.stopPropagation(); nextImage(); }}>▶</button>
@@ -81,9 +102,10 @@ export function PhotoGallery({ query, enabled }: PhotoGalleryProps) {
             src={photos[lightboxIndex].src}
             alt={photos[lightboxIndex].alt}
             onClick={(e) => e.stopPropagation()}
+            onError={() => handleImgError(lightboxIndex)}
           />
           <div className={styles.lightboxInfo}>
-            {lightboxIndex + 1} / {photos.length}
+            {lightboxIndex + 1} / 10
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-interface Photo {
+export interface Photo {
   id: number;
   src: string;
   thumb: string;
@@ -8,20 +8,18 @@ interface Photo {
 }
 
 /**
- * Generate 10 Unsplash Source image URLs using the search query.
- * No API calls — images load directly as <img> sources.
- * Each URL gets a unique cache-busting seed to ensure different images.
+ * Generate 10 Picsum photo URLs (free, no API key, works globally).
+ * Picsum serves random CC-licensed photos.
  */
-function generateUrls(query: string): Photo[] {
-  const tags = query
-    .replace(/[()（）]/g, '')
-    .trim() || 'china,landscape';
-
+function generateUrls(_query: string): Photo[] {
   return Array.from({ length: 10 }, (_, i) => {
-    const seed = i * 37 + 11;
-    const url = `https://source.unsplash.com/800x600/?${encodeURIComponent(tags)}&sig=${seed}`;
-    const thumb = `https://source.unsplash.com/400x300/?${encodeURIComponent(tags)}&sig=${seed}`;
-    return { id: i, src: url, thumb, alt: query };
+    const seed = i * 53 + 7;
+    return {
+      id: i,
+      src: `https://picsum.photos/seed/${seed}/800/600`,
+      thumb: `https://picsum.photos/seed/${seed}/400/300`,
+      alt: _query,
+    };
   });
 }
 
@@ -33,7 +31,6 @@ export function usePhotos(query: string, enabled: boolean) {
   const fetchPhotos = useCallback(() => {
     if (!enabled || loaded) return;
     setLoading(true);
-    // Generate URLs synchronously — no network call needed
     const results = generateUrls(query);
     setPhotos(results);
     setLoading(false);
@@ -51,5 +48,10 @@ export function usePhotos(query: string, enabled: boolean) {
     setLoading(false);
   }, [query]);
 
-  return { photos, loading, error: '', retry: () => { setLoaded(false); setPhotos([]); } };
+  return {
+    photos,
+    loading,
+    error: '',
+    retry: () => { setLoaded(false); setPhotos([]); },
+  };
 }

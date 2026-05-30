@@ -1,6 +1,6 @@
 .card {
   background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
   border-left: 3px solid transparent;
   border-radius: 10px;
   padding: 14px 16px;
@@ -8,17 +8,19 @@
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .card:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: #f0f4f8;
   border-color: var(--border-medium);
 }
 
 .active {
-  background: rgba(255, 107, 107, 0.08);
-  border-color: rgba(255, 107, 107, 0.3);
+  background: #fff5f5;
+  border-color: rgba(231, 76, 60, 0.3);
   border-left-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(231,76,60,0.1);
 }
 
 .topRow {
@@ -29,7 +31,7 @@
 
 .dayNum {
   display: inline-block;
-  background: #1e3a5f;
+  background: var(--blue);
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -54,10 +56,10 @@
 
 .weather {
   font-size: 10px;
-  background: rgba(255, 255, 255, 0.06);
+  background: #e8f4fd;
   padding: 2px 6px;
   border-radius: 8px;
-  color: #8ab4d6;
+  color: #2980b9;
   white-space: nowrap;
 }
 
@@ -65,7 +67,7 @@
   font-size: 14px;
   font-weight: 600;
   margin: 8px 0 4px;
-  color: #e8e8e8;
+  color: #1a1a1a;
 }
 
 .route {
@@ -98,7 +100,7 @@
 
 .detailSection {
   margin-bottom: 5px;
-  color: #e0e0e0;
+  color: #222;
 }
 
 .detailSection strong {
