@@ -61,17 +61,12 @@ export function PhotoGallery({ query, enabled }: PhotoGalleryProps) {
     );
   }
 
-  // Show error with retry or API key hint
+  // Show error with retry
   if (error && photos.length === 0) {
-    const isKeyHint = error.includes('Pexels');
     return (
       <div className={styles.gallery}>
         <div className={styles.error}>
-          {isKeyHint ? (
-            <>📷 {error} — 注册地址：<a href="https://www.pexels.com/api/" target="_blank" rel="noopener">pexels.com/api</a></>
-          ) : (
-            <>📷 {error} <button onClick={retry}>重试</button></>
-          )}
+          📷 {error} <button onClick={retry}>重试</button>
         </div>
       </div>
     );

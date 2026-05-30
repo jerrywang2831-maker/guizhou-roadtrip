@@ -9,7 +9,7 @@ export interface Photo {
 }
 
 // Get a free API key at https://www.pexels.com/api/
-const PEXELS_KEY = 'YOUR_PEXELS_API_KEY';
+const PEXELS_KEY = 'GbDJcx9JvHHxgwLq7ESkDgzeLUdbgsTvV39Cd9TerCj0w6H8e9ICRFln';
 
 /**
  * Build a search query optimized for finding real photos of Chinese attractions.
@@ -25,9 +25,6 @@ function buildSearchQuery(attractionName: string): string {
 }
 
 async function fetchFromPexels(query: string): Promise<Photo[]> {
-  if (PEXELS_KEY === 'YOUR_PEXELS_API_KEY') {
-    throw new Error('NO_KEY');
-  }
   const searchQuery = buildSearchQuery(query);
   const resp = await fetch(
     `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchQuery)}&per_page=10&locale=zh-CN`,
@@ -58,9 +55,7 @@ export function usePhotos(query: string, enabled: boolean) {
       const results = await fetchFromPexels(query);
       setPhotos(results);
     } catch (e: any) {
-      if (e.message === 'NO_KEY') {
-        setError('请配置免费 Pexels API Key (pexels.com)');
-      } else if (e.message === 'NO_RESULTS') {
+      if (e.message === 'NO_RESULTS') {
         setError(`未找到 "${query}" 的相关照片`);
       } else {
         setError(e.message || '加载失败');
