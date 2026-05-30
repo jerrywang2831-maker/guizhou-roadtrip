@@ -14,11 +14,12 @@ interface SidebarProps {
   onNextDay: () => void;
   onToggleRoute: () => void;
   onFocusOverview: () => void;
+  onToggleMapView: () => void;
 }
 
 export function Sidebar({
   activeDay, routeMode, weatherCache, showMap,
-  onSelectDay, onPrevDay, onNextDay, onToggleRoute, onFocusOverview,
+  onSelectDay, onPrevDay, onNextDay, onToggleRoute, onFocusOverview, onToggleMapView,
 }: SidebarProps) {
   const getWeatherForDay = useCallback((dayObj: ItineraryDay): WeatherDay | null => {
     const stopId = dayObj.stopTo >= 0 ? dayObj.stopTo : (dayObj.stopFrom >= 0 ? dayObj.stopFrom : -1);
@@ -40,6 +41,9 @@ export function Sidebar({
             <span className={styles.toggleSlider} />
           </label>
           <span className={`${styles.toggleLabel} ${routeMode === 's' ? styles.toggleLabelActive : ''}`}>🚀 高速优先</span>
+          <button className={styles.viewToggle} onClick={onToggleMapView}>
+            {showMap ? '📋 纯行程' : '🗺️ 地图'}
+          </button>
         </div>
       </div>
       <div className={styles.dayNav}>

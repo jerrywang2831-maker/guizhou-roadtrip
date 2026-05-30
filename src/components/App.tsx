@@ -10,7 +10,7 @@ import styles from './App.module.css';
 export default function App() {
   const [activeDay, setActiveDay] = useState(0);
   const [routeMode, setRouteMode] = useState<'g' | 's'>('g');
-  const [showMap, setShowMap] = useState(true);
+  const [showMap, setShowMap] = useState(false);
   const [overviewTrigger, setOverviewTrigger] = useState(0);
   const weatherCache = useWeather();
 
@@ -42,7 +42,7 @@ export default function App() {
 
   return (
     <div className={styles.app}>
-      <Header showMap={showMap} onToggleMap={toggleMapView} />
+      <Header />
       <div className={styles.main}>
         <Sidebar
           activeDay={activeDay}
@@ -54,6 +54,7 @@ export default function App() {
           onNextDay={nextDay}
           onToggleRoute={toggleRouteMode}
           onFocusOverview={focusOverview}
+          onToggleMapView={toggleMapView}
         />
         {showMap && (
           <MapContainer
