@@ -12,6 +12,7 @@
 .fullWidth {
   width: 100%;
   min-width: 100%;
+  max-height: none;
   border-right: none;
 }
 
