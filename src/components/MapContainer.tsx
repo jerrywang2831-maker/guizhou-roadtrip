@@ -167,7 +167,7 @@ export function MapContainer({ activeDay, routeMode, onSelectDay, onPrevDay, onN
         const color = DRIVING_COLORS[idx % DRIVING_COLORS.length];
         const fbPath = straightFallback(idx);
 
-        // 国道: LEAST_FEE → LEAST_TIME → LEAST_DISTANCE
+        // 国道: LEAST_FEE → LEAST_TIME → LEAST_DISTANCE (3-level fallback)
         setTimeout(() => {
           function setG(p: [number, number][], s: string) {
             const pl = createPolyline(p, color, s);
@@ -196,7 +196,7 @@ export function MapContainer({ activeDay, routeMode, onSelectDay, onPrevDay, onN
           });
         }, idx * 500);
 
-        // 高速: LEAST_TIME → LEAST_DISTANCE
+        // 高速: LEAST_TIME → LEAST_DISTANCE → LEAST_FEE (3-level fallback, same as 国道)
         setTimeout(() => {
           function setS(p: [number, number][], s: string) {
             const pl = createPolyline(p, color, s);
@@ -217,10 +217,13 @@ export function MapContainer({ activeDay, routeMode, onSelectDay, onPrevDay, onN
           searchS(window.AMap.DrivingPolicy.LEAST_TIME, (path) => {
             if (path) { setS(path, 'solid'); return; }
             searchS(window.AMap.DrivingPolicy.LEAST_DISTANCE, (path2) => {
-              setS(path2 || fbPath, path2 ? 'solid' : 'dashed');
+              if (path2) { setS(path2, 'solid'); return; }
+              searchS(window.AMap.DrivingPolicy.LEAST_FEE, (path3) => {
+                setS(path3 || fbPath, path3 ? 'solid' : 'dashed');
+              });
             });
           });
-        }, idx * 500 + 250);
+        }, idx * 800 + 400);
       });
     });
     } catch (e) {

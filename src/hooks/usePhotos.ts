@@ -5,37 +5,70 @@ export interface Photo {
   src: string;
   thumb: string;
   alt: string;
+  photographer: string;
 }
 
+// Get a free API key at https://www.pexels.com/api/
+const PEXELS_KEY = 'YOUR_PEXELS_API_KEY';
+
 /**
- * Generate 10 Picsum photo URLs (free, no API key, works globally).
- * Picsum serves random CC-licensed photos.
+ * Build a search query optimized for finding real photos of Chinese attractions.
+ * Adds "China scenery" context to improve relevance.
  */
-function generateUrls(_query: string): Photo[] {
-  return Array.from({ length: 10 }, (_, i) => {
-    const seed = i * 53 + 7;
-    return {
-      id: i,
-      src: `https://picsum.photos/seed/${seed}/800/600`,
-      thumb: `https://picsum.photos/seed/${seed}/400/300`,
-      alt: _query,
-    };
-  });
+function buildSearchQuery(attractionName: string): string {
+  const name = attractionName.replace(/[()（）]/g, '').trim();
+  // For well-known attractions, use the name directly
+  const famous = ['黄果树瀑布', '千户苗寨', '小七孔', '梵净山', '凤凰古城',
+    '龙宫', '织金洞', '茅台镇', '恩施', '洪崖洞', '甲秀楼'];
+  const isFamous = famous.some(f => name.includes(f));
+  return isFamous ? name : `${name} 中国风景`;
+}
+
+async function fetchFromPexels(query: string): Promise<Photo[]> {
+  if (PEXELS_KEY === 'YOUR_PEXELS_API_KEY') {
+    throw new Error('NO_KEY');
+  }
+  const searchQuery = buildSearchQuery(query);
+  const resp = await fetch(
+    `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchQuery)}&per_page=10&locale=zh-CN`,
+    { headers: { Authorization: PEXELS_KEY } }
+  );
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const data = await resp.json();
+  if (!data.photos?.length) throw new Error('NO_RESULTS');
+  return data.photos.map((p: any) => ({
+    id: p.id,
+    src: p.src.large,
+    thumb: p.src.medium,
+    alt: p.alt || query,
+    photographer: p.photographer,
+  }));
 }
 
 export function usePhotos(query: string, enabled: boolean) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState('');
 
-  const fetchPhotos = useCallback(() => {
-    if (!enabled || loaded) return;
+  const fetchPhotos = useCallback(async () => {
+    if (!enabled) return;
     setLoading(true);
-    const results = generateUrls(query);
-    setPhotos(results);
-    setLoading(false);
-    setLoaded(true);
-  }, [query, enabled, loaded]);
+    setError('');
+    try {
+      const results = await fetchFromPexels(query);
+      setPhotos(results);
+    } catch (e: any) {
+      if (e.message === 'NO_KEY') {
+        setError('请配置免费 Pexels API Key (pexels.com)');
+      } else if (e.message === 'NO_RESULTS') {
+        setError(`未找到 "${query}" 的相关照片`);
+      } else {
+        setError(e.message || '加载失败');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [query, enabled]);
 
   useEffect(() => {
     if (enabled) fetchPhotos();
@@ -44,14 +77,9 @@ export function usePhotos(query: string, enabled: boolean) {
   // Reset when query changes
   useEffect(() => {
     setPhotos([]);
-    setLoaded(false);
+    setError('');
     setLoading(false);
   }, [query]);
 
-  return {
-    photos,
-    loading,
-    error: '',
-    retry: () => { setLoaded(false); setPhotos([]); },
-  };
+  return { photos, loading, error, retry: () => { setPhotos([]); setError(''); } };
 }

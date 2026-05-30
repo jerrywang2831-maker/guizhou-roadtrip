@@ -29,7 +29,7 @@ interface PhotoGalleryProps {
 }
 
 export function PhotoGallery({ query, enabled }: PhotoGalleryProps) {
-  const { photos, loading } = usePhotos(query, enabled);
+  const { photos, loading, error, retry } = usePhotos(query, enabled);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [failed, setFailed] = useState<Set<number>>(new Set());
 
@@ -55,7 +55,23 @@ export function PhotoGallery({ query, enabled }: PhotoGalleryProps) {
       <div className={styles.gallery}>
         <div className={styles.loading}>
           <span className={styles.loadingSpinner} />
-          正在加载照片...
+          正在搜索「{query}」的真实照片...
+        </div>
+      </div>
+    );
+  }
+
+  // Show error with retry or API key hint
+  if (error && photos.length === 0) {
+    const isKeyHint = error.includes('Pexels');
+    return (
+      <div className={styles.gallery}>
+        <div className={styles.error}>
+          {isKeyHint ? (
+            <>📷 {error} — 注册地址：<a href="https://www.pexels.com/api/" target="_blank" rel="noopener">pexels.com/api</a></>
+          ) : (
+            <>📷 {error} <button onClick={retry}>重试</button></>
+          )}
         </div>
       </div>
     );
@@ -69,7 +85,7 @@ export function PhotoGallery({ query, enabled }: PhotoGalleryProps) {
     <div className={styles.gallery}>
       <div className={styles.galleryHeader}>
         <span className={styles.galleryTitle}>📷 {query}</span>
-        <span className={styles.galleryCount}>10张</span>
+        <span className={styles.galleryCount}>{photos.length}张真实照片</span>
       </div>
       <div className={styles.scroll}>
         {photos.map((p, i) =>
@@ -105,7 +121,7 @@ export function PhotoGallery({ query, enabled }: PhotoGalleryProps) {
             onError={() => handleImgError(lightboxIndex)}
           />
           <div className={styles.lightboxInfo}>
-            {lightboxIndex + 1} / 10
+            {lightboxIndex + 1} / {photos.length} · Photo by {photos[lightboxIndex]?.photographer || 'Pexels'}
           </div>
         </div>
       )}
