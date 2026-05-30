@@ -1,6 +1,6 @@
 .sidebar {
-  width: 390px;
-  min-width: 390px;
+  width: 480px;
+  min-width: 480px;
   background: var(--bg-sidebar);
   display: flex;
   flex-direction: column;
