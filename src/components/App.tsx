@@ -10,6 +10,7 @@ import styles from './App.module.css';
 export default function App() {
   const [activeDay, setActiveDay] = useState(0);
   const [routeMode, setRouteMode] = useState<'g' | 's'>('g');
+  const [showMap, setShowMap] = useState(true);
   const [overviewTrigger, setOverviewTrigger] = useState(0);
   const weatherCache = useWeather();
 
@@ -33,30 +34,37 @@ export default function App() {
     setRouteMode(prev => prev === 'g' ? 's' : 'g');
   }, []);
 
+  const toggleMapView = useCallback(() => {
+    setShowMap(prev => !prev);
+  }, []);
+
   useKeyboardNav(prevDay, nextDay);
 
   return (
     <div className={styles.app}>
-      <Header />
+      <Header showMap={showMap} onToggleMap={toggleMapView} />
       <div className={styles.main}>
         <Sidebar
           activeDay={activeDay}
           routeMode={routeMode}
           weatherCache={weatherCache}
+          showMap={showMap}
           onSelectDay={selectDay}
           onPrevDay={prevDay}
           onNextDay={nextDay}
           onToggleRoute={toggleRouteMode}
           onFocusOverview={focusOverview}
         />
-        <MapContainer
-          activeDay={activeDay}
-          routeMode={routeMode}
-          onSelectDay={selectDay}
-          onPrevDay={prevDay}
-          onNextDay={nextDay}
-          overviewTrigger={overviewTrigger}
-        />
+        {showMap && (
+          <MapContainer
+            activeDay={activeDay}
+            routeMode={routeMode}
+            onSelectDay={selectDay}
+            onPrevDay={prevDay}
+            onNextDay={nextDay}
+            overviewTrigger={overviewTrigger}
+          />
+        )}
       </div>
     </div>
   );

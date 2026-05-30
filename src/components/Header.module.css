@@ -21,16 +21,46 @@
   color: var(--accent);
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .meta {
   font-size: 12px;
   color: rgba(255,255,255,0.75);
 }
 
+.viewToggle {
+  padding: 5px 14px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.viewToggle:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.5);
+}
+
 @media (max-width: 768px) {
+  .header {
+    padding: 0 12px;
+  }
   .header h1 {
-    font-size: 15px;
+    font-size: 14px;
   }
   .meta {
     display: none;
+  }
+  .viewToggle {
+    font-size: 11px;
+    padding: 4px 10px;
   }
 }

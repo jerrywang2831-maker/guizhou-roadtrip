@@ -9,6 +9,30 @@
   transition: width 0.3s;
 }
 
+.fullWidth {
+  width: 100%;
+  min-width: 100%;
+  border-right: none;
+}
+
+.fullWidth .dayList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 12px 16px;
+  align-content: start;
+}
+
+.fullWidth .dayList .card {
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .fullWidth .dayList {
+    grid-template-columns: 1fr;
+  }
+}
+
 .sidebarHeader {
   padding: 18px 20px 14px;
   border-bottom: 1px solid var(--border-subtle);

@@ -8,6 +8,7 @@ interface SidebarProps {
   activeDay: number;
   routeMode: 'g' | 's';
   weatherCache: Record<number, WeatherDay[]>;
+  showMap: boolean;
   onSelectDay: (day: number) => void;
   onPrevDay: () => void;
   onNextDay: () => void;
@@ -16,7 +17,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({
-  activeDay, routeMode, weatherCache,
+  activeDay, routeMode, weatherCache, showMap,
   onSelectDay, onPrevDay, onNextDay, onToggleRoute, onFocusOverview,
 }: SidebarProps) {
   const getWeatherForDay = useCallback((dayObj: ItineraryDay): WeatherDay | null => {
@@ -28,7 +29,7 @@ export function Sidebar({
   }, [weatherCache]);
 
   return (
-    <div className={styles.sidebar}>
+    <div className={`${styles.sidebar} ${!showMap ? styles.fullWidth : ''}`}>
       <div className={styles.sidebarHeader}>
         <h2>📋 行程总览</h2>
         <p>武汉→常德→凤凰→梵净山→西江→荔波→贵阳→黄果树→遵义→茅台→恩施→武汉</p>
@@ -44,7 +45,7 @@ export function Sidebar({
       <div className={styles.dayNav}>
         <button onClick={onPrevDay} title="上一天">◀ 上一天</button>
         <button onClick={onNextDay} title="下一天">下一天 ▶</button>
-        <button onClick={onFocusOverview} style={{ flex: 0.6 }}>🗺 全景</button>
+        {showMap && <button onClick={onFocusOverview} style={{ flex: 0.6 }}>🗺 全景</button>}
       </div>
       <div className={styles.dayList}>
         {ITINERARY.map((day, i) => (
