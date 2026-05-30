@@ -98,10 +98,12 @@
 
 .detailSection {
   margin-bottom: 5px;
+  color: #e0e0e0;
 }
 
 .detailSection strong {
   color: var(--accent);
+  font-weight: 600;
 }
 
 @keyframes fadeIn {
