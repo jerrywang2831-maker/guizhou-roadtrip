@@ -165,6 +165,12 @@
     min-width: 100%;
     max-height: 45%;
   }
+  .fullWidth {
+    width: 100%;
+    min-width: 100%;
+    max-height: none;
+    border-right: none;
+  }
   .dayNav {
     flex-wrap: wrap;
   }
