@@ -1,5 +1,6 @@
 import type { ItineraryDay, WeatherDay } from '../types';
 import { W_ICONS, W_TEXT } from '../data/weather-icons';
+import { PhotoGallery } from './PhotoGallery';
 import styles from './DayCard.module.css';
 
 interface DayCardProps {
@@ -14,6 +15,8 @@ export function DayCard({ day, isActive, routeMode, weather, onClick }: DayCardP
   const r = routeMode === 'g' ? day.route_g : day.route_s;
   const icon = routeMode === 'g' ? '🛣' : '🚀';
   const routeStr = r.dist === '—' ? r.path : `${r.path} · ${r.dist} · ${r.time}`;
+  // Use the first sight or the destination as the photo search query
+  const photoQuery = day.sights[0] || day.title.split('→').pop()?.trim() || day.title;
 
   return (
     <div className={`${styles.card} ${isActive ? styles.active : ''}`} onClick={onClick}>
@@ -39,6 +42,10 @@ export function DayCard({ day, isActive, routeMode, weather, onClick }: DayCardP
         <div className={styles.detailSection}><strong>🍜 美食：</strong>{day.food.join('、')}</div>
         <div className={styles.detailSection}><strong>🏨 住宿：</strong>{day.hotel}</div>
         {day.note && <div className={styles.detailSection}><strong>💡 提示：</strong>{day.note}</div>}
+        {/* Photo gallery for scenic spots (only load when expanded) */}
+        {day.sights.length > 0 && (
+          <PhotoGallery query={photoQuery} enabled={isActive} />
+        )}
       </div>
     </div>
   );
