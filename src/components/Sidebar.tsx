@@ -12,11 +12,12 @@ interface SidebarProps {
   onPrevDay: () => void;
   onNextDay: () => void;
   onToggleRoute: () => void;
+  onFocusOverview: () => void;
 }
 
 export function Sidebar({
   activeDay, routeMode, weatherCache,
-  onSelectDay, onPrevDay, onNextDay, onToggleRoute,
+  onSelectDay, onPrevDay, onNextDay, onToggleRoute, onFocusOverview,
 }: SidebarProps) {
   const getWeatherForDay = useCallback((dayObj: ItineraryDay): WeatherDay | null => {
     const stopId = dayObj.stopTo >= 0 ? dayObj.stopTo : (dayObj.stopFrom >= 0 ? dayObj.stopFrom : -1);
@@ -43,7 +44,7 @@ export function Sidebar({
       <div className={styles.dayNav}>
         <button onClick={onPrevDay} title="上一天">◀ 上一天</button>
         <button onClick={onNextDay} title="下一天">下一天 ▶</button>
-        <button onClick={() => onSelectDay(0)} style={{ flex: 0.6 }}>🗺 全景</button>
+        <button onClick={onFocusOverview} style={{ flex: 0.6 }}>🗺 全景</button>
       </div>
       <div className={styles.dayList}>
         {ITINERARY.map((day, i) => (

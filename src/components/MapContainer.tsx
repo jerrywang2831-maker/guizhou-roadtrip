@@ -21,6 +21,7 @@ interface MapContainerProps {
   onSelectDay: (day: number) => void;
   onPrevDay: () => void;
   onNextDay: () => void;
+  overviewTrigger: number;
 }
 
 interface PolylineEntry {
@@ -29,7 +30,7 @@ interface PolylineEntry {
   color: string;
 }
 
-export function MapContainer({ activeDay, routeMode, onSelectDay, onPrevDay, onNextDay }: MapContainerProps) {
+export function MapContainer({ activeDay, routeMode, onSelectDay, onPrevDay, onNextDay, overviewTrigger }: MapContainerProps) {
   const { loaded, error: loadError } = useAmap();
   const [initError, setInitError] = useState<string | null>(null);
   const mapRef = useRef<AMapMap | null>(null);
@@ -260,6 +261,23 @@ export function MapContainer({ activeDay, routeMode, onSelectDay, onPrevDay, onN
     showLines.forEach(p => { if (p?.polyline) p.polyline.setMap(mapRef.current); });
     if (routesReadyRef.current) highlightDay(activeDay);
   }, [routeMode, activeDay, highlightDay]);
+
+  // Handle overview trigger from sidebar 全景 button
+  useEffect(() => {
+    if (overviewTrigger > 0 && mapRef.current) {
+      mapRef.current.setZoomAndCenter(7, [108.5, 28.0]);
+      [routeLinesGRef, routeLinesSRef].forEach(lines => {
+        lines.current.forEach(p => {
+          if (p?.polyline) {
+            p.polyline.setOptions({ strokeWeight: 4, strokeOpacity: 0.5, strokeColor: p.color, zIndex: 50 });
+          }
+        });
+      });
+      markersRef.current.forEach(m => {
+        if (m.element) m.element.classList.remove(styles.markerHighlight);
+      });
+    }
+  }, [overviewTrigger]);
 
   const handleZoomIn = useCallback(() => mapRef.current?.zoomIn(), []);
   const handleZoomOut = useCallback(() => mapRef.current?.zoomOut(), []);

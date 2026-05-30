@@ -10,10 +10,15 @@ import styles from './App.module.css';
 export default function App() {
   const [activeDay, setActiveDay] = useState(0);
   const [routeMode, setRouteMode] = useState<'g' | 's'>('g');
+  const [overviewTrigger, setOverviewTrigger] = useState(0);
   const weatherCache = useWeather();
 
   const selectDay = useCallback((dayIndex: number) => {
     setActiveDay(dayIndex);
+  }, []);
+
+  const focusOverview = useCallback(() => {
+    setOverviewTrigger(prev => prev + 1);
   }, []);
 
   const prevDay = useCallback(() => {
@@ -42,6 +47,7 @@ export default function App() {
           onPrevDay={prevDay}
           onNextDay={nextDay}
           onToggleRoute={toggleRouteMode}
+          onFocusOverview={focusOverview}
         />
         <MapContainer
           activeDay={activeDay}
@@ -49,6 +55,7 @@ export default function App() {
           onSelectDay={selectDay}
           onPrevDay={prevDay}
           onNextDay={nextDay}
+          overviewTrigger={overviewTrigger}
         />
       </div>
     </div>
